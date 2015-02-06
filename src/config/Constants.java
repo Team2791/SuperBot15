@@ -7,7 +7,7 @@ public class Constants {
 	public static final double ELEVATOR_DEADZONE = 0.10; // used on elevator teleop
 	public static final double AXIS_DEADZONE     = 0.05; // used for rotation
 	public static final double AXIS_SCALE        = 1.00; // used for rotation
-	
+	public static final double ROTATION_RATE     = 50.0; // used for rotation
 	
 	public static final int BUTTON_A   = 1;
 	public static final int BUTTON_B   = 2;
