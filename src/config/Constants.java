@@ -3,8 +3,11 @@ package config;
 public class Constants {
 	public static final double JOYSTICK_DEADZONE = 0.03;
 	public static final double JOYSTICK_SCALE    = 1.00;
-	public static final double AXIS_SCALE        = 1.00; // used on elevator teleop
-	public static final double AXIS_DEADZONE     = 0.10; // used on elevator teleop
+	public static final double ELEVATOR_SCALE    = 1.00; // used on elevator teleop
+	public static final double ELEVATOR_DEADZONE = 0.10; // used on elevator teleop
+	public static final double AXIS_DEADZONE     = 0.05; // used for rotation
+	public static final double AXIS_SCALE        = 1.00; // used for rotation
+	
 	
 	public static final int BUTTON_A   = 1;
 	public static final int BUTTON_B   = 2;
