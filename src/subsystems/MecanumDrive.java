@@ -53,26 +53,19 @@ public class MecanumDrive {
 		rotationPID.setMinOutput(-.3);
 	}
 	public void run() {
-		// combine the inputs from both triggers into a single number
 		double driverInput;
-		// triggers 
-//		driverInput = Robot.controls.driver.getRawAxis(3) - Robot.controls.driver.getRawAxis(2);
-		// right stick X
-		driverInput = Robot.controls.driver.getRawAxis(4);
-		
-		// 0.05 deadzone
-		if(driverInput < 0.05 && driverInput > -0.05)
-			driverInput = 0;
-		
+		// driverInput = Robot.controls.driver.getRawAxis(3) - Robot.controls.driver.getRawAxis(2); // triggers
+		driverInput = Robot.controls.driver.getAxis(4); // right stick
 		if(PID_IN_USE) {
 			targetAngle += driverInput * joystickMaxDegreesPerSec / 50.0;
 			rotationPID.setSetpoint(targetAngle);
+			
 			// add PID output and feed forward to the spin
 			spin = -rotationPID.updateOutput(gyro.getAngle()) + driverInput;
 		}
-		else {
+		else
 			spin = driverInput;
-		}
+		
 		
 		//driveTrain.mecanumDrive_Polar(getMagnitude(), getDirection(), getSpin());
 		wheelSpeeds = driveTrain.mecanumDrive_Cartesian_report(Robot.controls.driver.getx(), Robot.controls.driver.gety(), spin, 0);
