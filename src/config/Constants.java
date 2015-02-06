@@ -18,9 +18,9 @@ public class Constants {
 	public static final int BUTTON_RS  = 10;
 	
 	public static final int AXIS_LS    = 1;
-	public static final int AXIS_RS    = 2;
-	public static final int AXIS_LT    = 3;
-	public static final int AXIS_RT    = 4;
+	public static final int AXIS_RS    = 4;
+	public static final int AXIS_LT    = 2;
+	public static final int AXIS_RT    = 3;
 	
 	public static final double[] ELEVATOR_PRESETS = {1.0, 2.0, 3.0, 4.0};
 	public static final double   ELEVATOR_OUTPUT_LIMIT = 0.7;
