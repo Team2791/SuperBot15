@@ -1,35 +1,43 @@
 package overriddenClasses;
 
+import config.Constants;
 import edu.wpi.first.wpilibj.Joystick;
 
 public class ShakerJoystick extends Joystick {
-    
-    public static double SCALE_FACTOR = 1.0;
-    public double deadzone = 0.03;
-    
+   
+	private static double JOYSTICK_SCALE = Constants.JOYSTICK_SCALE;
+	private static double JOYSTICK_DEADZONE = Constants.JOYSTICK_DEADZONE;
+	private static double AXIS_SCALE = Constants.AXIS_SCALE;
+	private static double AXIS_DEADZONE = Constants.AXIS_DEADZONE;
+	
     public ShakerJoystick(final int port){
         super(port);
     }
     
-    public void setScaleFactor(double scale){ SCALE_FACTOR = scale; }
     public double getx(){
         double X = super.getX();
-        
-        if(X < deadzone && X > -deadzone) X = 0;
-        X *= SCALE_FACTOR;
-        
-        return X;
+        return fixXYInput(X);
     }
     public double gety(){
         double Y = super.getY();
-        
-        if(Y  < deadzone && Y > -deadzone) Y = 0;
-        Y *= SCALE_FACTOR;
-        
-        return Y;
-    }
-
-	public static double getScaleFactor() {
-		return SCALE_FACTOR;
+        return fixXYInput(Y);
+    }	
+	public double getAxis(int slot){
+		double input = super.getRawAxis(slot);
+		return fixAxisInput(input);
+	}
+	
+	
+	private double fixXYInput(double input){
+		input *= JOYSTICK_SCALE;		
+		if(input < JOYSTICK_DEADZONE && input > -JOYSTICK_DEADZONE)
+			return 0.0;
+		return input;
+	}
+	private double fixAxisInput(double input){
+		input *= AXIS_SCALE;
+		if(input < AXIS_DEADZONE && input > -AXIS_DEADZONE)
+			return 0.0;
+		return input;
 	}
 }

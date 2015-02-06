@@ -1,4 +1,4 @@
-package subsystems;
+package config;
 import org.usfirst.frc.team2791.robot.*;
 
 import edu.wpi.first.wpilibj.Preferences;

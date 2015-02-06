@@ -1,4 +1,4 @@
-package subsystems;
+package config;
 
 import overriddenClasses.ShakerJoystick;
 

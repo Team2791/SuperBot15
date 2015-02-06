@@ -1,6 +1,7 @@
 package subsystems;
 import org.usfirst.frc.team2791.robot.*;
 
+import config.ShakyPID;
 import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Talon;
@@ -18,7 +19,7 @@ public class MecanumDrive {
 	double[] wheelSpeeds = {0, 0, 0, 0};
 	
 	public ShakyPID rotationPID;
-	private double PID_P, PID_I, PID_D, PID_DEADZONE;
+	private double PID_P, PID_I, PID_D;
 	private static final double[] PRESETS = {0, 90, 180, 270};
 	public boolean nearAngle = false;
 	public boolean PID_IN_USE = true;
@@ -40,8 +41,6 @@ public class MecanumDrive {
 		driveTrain.setInvertedMotor(RobotDrive.MotorType.kFrontRight, true);
 		driveTrain.setInvertedMotor(RobotDrive.MotorType.kRearRight, true);
 		
-		PID_DEADZONE = 0;
-		
 		PID_P = Robot.dash.getDoubleFix("PID_P", 0.045);
 		PID_I = Robot.dash.getDoubleFix("PID_I", 0.1);
 		PID_D = Robot.dash.getDoubleFix("PID_D", 0.01);
@@ -49,11 +48,11 @@ public class MecanumDrive {
 		joystickMaxDegreesPerSec = Robot.dash.getDoubleFix("joystickMaxDegreesPerSec", 420.0);
 		
 		
-		rotationPID = new ShakyPID(PID_P, PID_I, PID_D, PID_DEADZONE);
+		rotationPID = new ShakyPID(PID_P, PID_I, PID_D);
 		rotationPID.setMaxOutput(.3);
 		rotationPID.setMinOutput(-.3);
 	}
-	public void drive() {
+	public void run() {
 		// combine the inputs from both triggers into a single number
 		double driverInput;
 		// triggers 
@@ -61,7 +60,7 @@ public class MecanumDrive {
 		// right stick X
 		driverInput = Robot.controls.driver.getRawAxis(4);
 		
-		// 0.05 deeadzone
+		// 0.05 deadzone
 		if(driverInput < 0.05 && driverInput > -0.05)
 			driverInput = 0;
 		
@@ -88,7 +87,7 @@ public class MecanumDrive {
 		
 		joystickMaxDegreesPerSec = Robot.dash.getDoubleFix("joystickMaxDegreesPerSec", 420.0);
 		
-		rotationPID.update_values(PID_P, PID_I, PID_D, PID_DEADZONE);
+		rotationPID.update_values(PID_P, PID_I, PID_D);
 		rotationPID.reset();
     }
 	public void goToPreset(int preset){

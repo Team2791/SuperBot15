@@ -1,5 +1,6 @@
 
 package org.usfirst.frc.team2791.robot;
+import config.*;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import gameRunners.*;
 import subsystems.*;
@@ -23,7 +24,7 @@ public class Robot extends IterativeRobot {
     	dash     = new Dashboard();
     	mDrive   = new MecanumDrive();
     	analyzer = new Analyze();
-    	//elevator = new Elevator();
+    	elevator = new Elevator();
     	intake = new Intake();
     	
     	teleopRunner = new TeleopRunner();

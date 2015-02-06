@@ -2,28 +2,24 @@ package subsystems;
 
 import org.usfirst.frc.team2791.robot.Robot;
 
+import config.*;
 import edu.wpi.first.wpilibj.CounterBase;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.Talon;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class Elevator {
+public class Elevator{
 	// components 
 	Talon lift;
 	Gyro gyro;
-	public static final double[] presets = {1.0, 2.0, 3.0, 4.0}; //preset encoder values
-	public ShakyPID elevatorPID;
-	static double PID_P, PID_I, PID_D, PID_DEADZONE;
-	static final double ELEVATOR_MAX_HEIGHT = 6.0;
+	public ElevatorPID elevatorPID;
+	static double PID_P, PID_I, PID_D;
 	static Encoder encoder;
 	static DigitalInput topSwitch, botSwitch;
 	
 	// state variables 
-	private boolean usingPID = false;
-	private boolean autoMode = false;
-	private boolean haveTote = false;
+	public boolean hasTote = false;
 	
 	
 	public Elevator() {
@@ -41,75 +37,41 @@ public class Elevator {
 		PID_I = 0.50;
 		PID_D = 0.00;
 		
-		elevatorPID = new ShakyPID(PID_P, PID_I, PID_D, 0.0);
-		elevatorPID.setMaxOutput(0.7);
-		elevatorPID.setMinOutput(-0.7);
+		elevatorPID = new ElevatorPID(PID_P, PID_I, PID_D);
+		elevatorPID.setMaxOutput(Constants.ELEVATOR_OUTPUT_LIMIT);
+		elevatorPID.setMinOutput(-Constants.ELEVATOR_OUTPUT_LIMIT);
 	}
 	
 	public void run() {
-		if(usingPID) {
-			setOutput(-elevatorPID.updateAndGetOutput(encoder.getDistance()));
-		}
-		if(autoMode) {
-			// state machine goes here
-		}
-		
-	}
-	
-	public void setOutputManual(double output) {
-		usingPID = false;
-		setOutput(output);
-	}
-	
-	private void setOutput(double output) {
-		// code to stop output if elevator is at top or bottom as told by limit switch and/or encoder
-//		if(atTop() && output > 0.0)
-//			output = 0;
-//		else if(atBot() && output < 0.0)
-//			output = 0;
-		
-		SmartDashboard.putNumber("Elevator output", output);
-		lift.set(output);
-	}
-	
-	@SuppressWarnings("unused")
-	private void setOutputFeedForward(double output) {
-		if(haveTote)
-			setOutput(output + 0.08);
+		if(elevatorPID.checkPIDUse())
+			elevatorPID.setOutput(-elevatorPID.updateAndGetOutput(encoder.getDistance()));
 		else
-			setOutput(output);
+			elevatorPID.setOutputManual(-Robot.controls.operator.getAxis(Constants.AXIS_LS));
+		
+		if(Robot.controls.operator.getRawButton(Constants.BUTTON_A))
+			goToPreset(0);
+		else if(Robot.controls.operator.getRawButton(Constants.BUTTON_B))
+			goToPreset(1);
+		else if(Robot.controls.operator.getRawButton(Constants.BUTTON_X))
+			goToPreset(2);
+		else if(Robot.controls.operator.getRawButton(Constants.BUTTON_Y))
+			goToPreset(3);
 	}
 	
-	public double getPosition() {
-		return encoder.getDistance();
-	}
+	public void setTalon(double power)         { lift.set(power); }
+	public void setOutputManual(double output) { elevatorPID.setOutputManual(output); }
 	
-	public double getSetpoint() {
-		return elevatorPID.getSetpoint();
-	}
+	public double getPosition()        { return encoder.getDistance(); }
+	public double getSetpoint()        { return elevatorPID.getSetpoint(); }
 	
-	public void goToPreset(int preset) {
-		usingPID = true;
-		elevatorPID.setSetpoint(presets[preset]);
-	}
+	public void goToPreset(int preset) { elevatorPID.goToPreset(preset); }
+	public void disable()              { elevatorPID.disable(); }
+	public void resetEncoder()         { encoder.reset(); }
 	
 	public boolean atTop() {
-		return topSwitch.get() || encoder.get() > ELEVATOR_MAX_HEIGHT - 0.1;
+		return topSwitch.get() || encoder.get() > Constants.ELEVATOR_MAX_HEIGHT - Constants.ELEVATOR_STOP_ZONE;
 	}
-	
 	public boolean atBot() {
-		return botSwitch.get() || encoder.get() < 0.1;
+		return botSwitch.get() || encoder.get() < Constants.ELEVATOR_STOP_ZONE;
 	}
-	
-	public void disable() {
-		usingPID = false;
-		elevatorPID.reset();
-	}
-	
-	public boolean notUsingPID() { return !usingPID; }
-	
-	public void resetEncoder() {
-		encoder.reset();
-	}
-
 }
