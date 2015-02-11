@@ -26,8 +26,7 @@ public class ShakerJoystick extends Joystick {
 		double input = super.getRawAxis(slot);
 		return fixAxisInput(input);
 	}
-	
-	
+		
 	private double fixXYInput(double input){
 		input *= JOYSTICK_SCALE;		
 		if(input < JOYSTICK_DEADZONE && input > -JOYSTICK_DEADZONE)

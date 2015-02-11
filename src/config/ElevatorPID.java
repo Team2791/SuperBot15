@@ -66,7 +66,7 @@ public class ElevatorPID{
     
     public void setOutputFeedForward(double output){
     	if(Robot.elevator.hasTote)
-    		setOutput(output + 0.08);
+    		setOutput(output + Constants.ELEVATOR_OUTPUT_TOTE_OFFSET);
     	else
     		setOutput(output);
     }

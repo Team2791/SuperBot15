@@ -5,9 +5,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Dashboard {
-	
 	Preferences pref;
-
 	public Dashboard(){
 		pref = Preferences.getInstance();
 	}
@@ -17,24 +15,19 @@ public class Dashboard {
 		displayEncoders();
 		displayDrive();
 		displayDrivePID();
-		displayElevator();
+		displayElevatorPID();
 	}
 	
 	public void displayJoysticks(){
-		SmartDashboard.putNumber("Driver X", Robot.controls.driver.getx());
-		SmartDashboard.putNumber("Driver Y", Robot.controls.driver.gety());
-		SmartDashboard.putNumber("Magnitude", Robot.mDrive.getMagnitude());
-		SmartDashboard.putNumber("Direction", Robot.mDrive.getDirection());
+		SmartDashboard.putNumber("Driver X", Robot.driver.getx());
+		SmartDashboard.putNumber("Driver Y", Robot.driver.gety());
 		SmartDashboard.putNumber("Spin", Robot.mDrive.getSpin());
 	}
-	public void displayEncoders(){
-		SmartDashboard.putNumber("EncoderFL.get()", Robot.analyzer.round(Robot.encoders.encoderFL.get()));
-		SmartDashboard.putNumber("EncoderBL.get()", Robot.analyzer.round(Robot.encoders.encoderBL.get()));
-		SmartDashboard.putNumber("EncoderFR.get()", Robot.analyzer.round(Robot.encoders.encoderFR.get()));
-		SmartDashboard.putNumber("EncoderBR.get()", Robot.analyzer.round(Robot.encoders.encoderBR.get()));
+	public void displayEncoders(){		
+		SmartDashboard.putNumber("Dist from origin**", Robot.encoders.getRealDistance());
 		
-		SmartDashboard.putNumber("Dist from origin", Robot.encoders.getRealDistance());
-		SmartDashboard.putNumber("Angle from origin", Robot.mDrive.gyro.getAngle());
+		SmartDashboard.putNumber("X Distance", Robot.encoders.encoderX.getDistance());
+		SmartDashboard.putNumber("Y Distance", Robot.encoders.encoderY.getDistance());
 		
 		SmartDashboard.putString("Front Left Encoder",String.format("Speed: %f Distance:%f\n", Robot.encoders.encoderFL.getRate(),  Robot.encoders.encoderFL.getDistance()));
 		SmartDashboard.putString("Front Right Encoder.", String.format("Speed: %f Distance:%f\n", Robot.encoders.encoderFR.getRate(),  Robot.encoders.encoderFR.getDistance()));
@@ -50,14 +43,21 @@ public class Dashboard {
 		SmartDashboard.putNumber("Gyro Angle", Robot.mDrive.gyro.getAngle());
 		SmartDashboard.putNumber("Gyro Rate", Robot.mDrive.gyro.getRate());
 		
-		SmartDashboard.putNumber("PID output", Robot.mDrive.getPIDOutput());
-		SmartDashboard.putNumber("Target Angle",  Robot.mDrive.getTargetAngle());
-		SmartDashboard.putNumber("Gyro - Target", Robot.mDrive.gyro.getAngle() - Robot.mDrive.getTargetAngle());
+		SmartDashboard.putNumber("Gyro PID output", Robot.mDrive.getPIDOutput());
+		SmartDashboard.putNumber("Gyro Target",  Robot.mDrive.getTargetAngle());
+		SmartDashboard.putNumber("Gyro Error Deg", Robot.mDrive.gyro.getAngle() - Robot.mDrive.getTargetAngle());
 	}
-	public void displayElevator(){
-		//SmartDashboard.putNumber("Elevator position", Robot.elevator.getPosition());
-		//SmartDashboard.putNumber("Elevator setpoint", Robot.elevator.getSetpoint());
+	public void displayElevatorPID(){
+		SmartDashboard.putNumber("Elevator Position", Robot.elevator.getPosition());
+		SmartDashboard.putNumber("Elevator rate", Robot.elevator.encoder.getRate());
+		
+		SmartDashboard.putNumber("Elevator Output", Robot.elevator.elevatorPID.getOutput());
+		SmartDashboard.putNumber("Target Height", Robot.elevator.elevatorPID.getSetpoint());
+		SmartDashboard.putNumber("Height error", Robot.elevator.getPosition() - Robot.elevator.getSetpoint());
 	}
+	
+	
+	
 	
 	public int getIntFix(String key, int def){
 		int val = pref.getInt(key, def);

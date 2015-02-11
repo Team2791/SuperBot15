@@ -15,22 +15,23 @@ public class Elevator{
 	Gyro gyro;
 	public ElevatorPID elevatorPID;
 	static double PID_P, PID_I, PID_D;
-	static Encoder encoder;
+	public Encoder encoder;
 	static DigitalInput topSwitch, botSwitch;
 	
 	// state variables 
 	public boolean hasTote = false;
+	public int currentPresetIndex = 0;
+	private boolean triggeredInc = false, triggeredDec = false;
 	
 	
 	public Elevator() {
-		lift = new Talon(Robot.eBoard.elevatorTalon);
+		lift = new Talon(Electronics.ELEVATOR_TALON);
 		
-		topSwitch = new DigitalInput(Robot.eBoard.elevatorLimitSwitchTop);
-		botSwitch = new DigitalInput(Robot.eBoard.elevatorLimitSwitchBot);
+		topSwitch = new DigitalInput(Electronics.ELEVATOR_LIM_SWITCH_TOP);
+		botSwitch = new DigitalInput(Electronics.ELEVATOR_LIM_SWITCH_BOT);
 		
-		encoder = new Encoder(Robot.eBoard.elevatorEncoderA, Robot.eBoard.elevatorEncoderB, false, CounterBase.EncodingType.k4X);
-		// 11.0018'' per rotation of output shaft,  12 for feet / 128 for 128
-		encoder.setDistancePerPulse(11.0018 / 12.0 / 128.0);
+		encoder = new Encoder(Electronics.ELEVATOR_ENC_A, Electronics.ELEVATOR_ENC_B, false, CounterBase.EncodingType.k4X);
+		encoder.setDistancePerPulse(Constants.ELEVATOR_DIST_PER_PULSE);
 		
 
 		PID_P = 3.00;
@@ -43,19 +44,30 @@ public class Elevator{
 	}
 	
 	public void run() {
+		// --------- manual increase --------- //
+		if(Robot.operator.getRawButton(Constants.BUTTON_LB)){
+			triggeredInc = true;
+		}
+		if(triggeredInc && !Robot.operator.getRawButton(Constants.BUTTON_LB)){
+			currentPresetIndex++;
+			triggeredInc = false;
+		}
+		
+		// --------- manual decrease --------- //
+		if(Robot.operator.getRawButton(Constants.BUTTON_RB)){
+			triggeredDec = true;
+		}
+		if(triggeredDec && !Robot.operator.getRawButton(Constants.BUTTON_RB)){
+			currentPresetIndex++;
+			triggeredDec = false;
+		}
+		goToPreset(currentPresetIndex);
+		
+		// --------- set output --------- //
 		if(elevatorPID.checkPIDUse())
 			elevatorPID.setOutput(-elevatorPID.updateAndGetOutput(encoder.getDistance()));
-		else
-			elevatorPID.setOutputManual(-Robot.controls.operator.getAxis(Constants.AXIS_LS));
-		
-		if(Robot.controls.operator.getRawButton(Constants.BUTTON_A))
-			goToPreset(0);
-		else if(Robot.controls.operator.getRawButton(Constants.BUTTON_B))
-			goToPreset(1);
-		else if(Robot.controls.operator.getRawButton(Constants.BUTTON_X))
-			goToPreset(2);
-		else if(Robot.controls.operator.getRawButton(Constants.BUTTON_Y))
-			goToPreset(3);
+		//else
+		//	elevatorPID.setOutputManual(-Robot.operator.getAxis(Constants.AXIS_LS_Y));
 	}
 	
 	public void setTalon(double power)         { lift.set(power); }
