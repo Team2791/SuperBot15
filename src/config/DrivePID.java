@@ -116,38 +116,5 @@ public class DrivePID{
     
     public void setSetpoint(double newSetpoint) { setpoint = newSetpoint; }
     public void setMinOutput(double min) {        minOutput = min; }
-    public void setMaxOutput(double max) {        maxOutput = max; }
-    
-    
-    // --------- autonomous stuff --------- //
-    
-    public void driveDistance(double x, double y, boolean cont){
-    	
-    	
-    	
-    	
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    public void setMaxOutput(double max) {        maxOutput = max; }        
 }

@@ -1,0 +1,7 @@
+to do
+	adjust all pid stuff
+	LED?
+	add current setpoint and info on current process of elevator to dashboard
+	add elevator piston - not yet put on robot
+	retract intake before dropping
+	raise hooks when extending intake

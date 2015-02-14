@@ -8,24 +8,35 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.Timer;
 
 public class Elevator{
 	// components 
-	Talon lift;
-	Gyro gyro;
-	public ElevatorPID elevatorPID;
-	static double PID_P, PID_I, PID_D;
-	public Encoder encoder;
-	static DigitalInput topSwitch, botSwitch;
+	public  static Talon lift;
+	public  static Gyro gyro;
+	public         ElevatorPID elevatorPID;
+	private static double PID_P;
+	private static double PID_I;
+	private static double PID_D;
+	public         Encoder encoder;
+	public  static DigitalInput topSwitch;
+	public  static DigitalInput botSwitch;
 	
 	// state variables 
-	public boolean hasTote = false;
-	public int currentPresetIndex = 0;
-	private boolean triggeredInc = false, triggeredDec = false;
+	public boolean  hasTote            = false;
+	public int      currentPresetIndex = 0;
+	public int      lastPreset         = 0;
+	private boolean triggeredInc       = false;
+	private boolean triggeredDec       = false;
+	private boolean triggeredStart     = false;
+	private boolean reachedHooks[]     = {true, false, false, false, false};
+	private Timer   caseTimer;
 	
 	
 	public Elevator() {
 		lift = new Talon(Electronics.ELEVATOR_TALON);
+		
+		caseTimer = new Timer();
 		
 		topSwitch = new DigitalInput(Electronics.ELEVATOR_LIM_SWITCH_TOP);
 		botSwitch = new DigitalInput(Electronics.ELEVATOR_LIM_SWITCH_BOT);
@@ -61,13 +72,45 @@ public class Elevator{
 			currentPresetIndex++;
 			triggeredDec = false;
 		}
-		goToPreset(currentPresetIndex);
 		
+		
+		// --------- case conditions --------- //
+		if(reachedHooks[currentPresetIndex] && currentPresetIndex != 0){
+			lastPreset = currentPresetIndex;
+			currentPresetIndex = 0;
+		}
+		
+		if(encoder.getDistance() > elevatorPID.getPresets()[currentPresetIndex] && currentPresetIndex != 0){
+			caseTimer.start();
+		}
+		
+		if(caseTimer.get() >= 3.0){ // 3 seconds to secure on hook
+			reachedHooks[currentPresetIndex] = true;
+			caseTimer.stop();
+			caseTimer.reset();
+		}
+		
+		// --------- press sel => start lifting --------- //
+		if(Robot.driver.getRawButton(Constants.BUTTON_SEL)){
+			triggeredStart = true;
+		}
+		if(triggeredStart && !Robot.operator.getRawButton(Constants.BUTTON_SEL)){
+			currentPresetIndex = lastPreset - 1;
+			triggeredStart = false;
+		}
+		
+		
+		goToPreset(currentPresetIndex);
 		// --------- set output --------- //
 		if(elevatorPID.checkPIDUse())
 			elevatorPID.setOutput(-elevatorPID.updateAndGetOutput(encoder.getDistance()));
 		//else
 		//	elevatorPID.setOutputManual(-Robot.operator.getAxis(Constants.AXIS_LS_Y));
+	}
+	
+	public void reset(){
+		for(int x = 1; x < elevatorPID.getPresets().length; x++)
+			reachedHooks[x] = false;
 	}
 	
 	public void setTalon(double power)         { lift.set(power); }

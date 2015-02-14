@@ -17,8 +17,11 @@ public class Electronics {
 	
 	public static final int INTAKE_TALON_LEFT  = 6;
 	public static final int INTAKE_TALON_RIGHT = 5;
-	public static final int INTAKE_SOLE_LEFT   = 1; // arbitrary
-	public static final int INTAKE_SOLE_RIGHT  = 2;
+	
+	public static final int INTAKE_SOLE_LEFT_REV  = 4;
+	public static final int INTAKE_SOLE_LEFT_FOR  = 5;   
+	public static final int INTAKE_SOLE_RIGHT_REV = 6;
+	public static final int INTAKE_SOLE_RIGHT_FOR = 7;
 	
 	// --------- elevator --------- //
 	
@@ -26,6 +29,11 @@ public class Electronics {
 	public static final int ELEVATOR_LIM_SWITCH_TOP = 6;
 	public static final int ELEVATOR_LIM_SWITCH_BOT = 7;
 	public static final int TOTE_LIM_SWITCH         = 8;
+	
+	public static final int DROPPER_SOLE_LEFT_UP    = 0;
+	public static final int DROPPER_SOLE_LEFT_DOWN  = 1;
+	public static final int DROPPER_SOLE_RIGHT_UP   = 2;
+	public static final int DROPPER_SOLE_RIGHT_DOWN = 3;
 		
 	// -------------encoders---------------------- //
 	

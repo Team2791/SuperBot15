@@ -19,11 +19,11 @@ public class ShakerDriveEncoders {
 		encoderFR.setDistancePerPulse(Constants.MEC_DISTANCE_PER_PULSE);
 		encoderBR.setDistancePerPulse(Constants.MEC_DISTANCE_PER_PULSE);
 		
-		encoderX = new Encoder(Electronics.FOLLOWER_X_ENC_A, Electronics.FOLLOWER_X_ENC_B, false, CounterBase.EncodingType.k4X);
-		encoderY = new Encoder(Electronics.FOLLOWER_Y_ENC_A, Electronics.FOLLOWER_Y_ENC_B, false, CounterBase.EncodingType.k4X);
+		// encoderX = new Encoder(Electronics.FOLLOWER_X_ENC_A, Electronics.FOLLOWER_X_ENC_B, false, CounterBase.EncodingType.k4X);
+		//encoderY = new Encoder(Electronics.FOLLOWER_Y_ENC_A, Electronics.FOLLOWER_Y_ENC_B, false, CounterBase.EncodingType.k4X);
 		
-		encoderX.setDistancePerPulse(Constants.MEC_DISTANCE_PER_PULSE);
-		encoderY.setDistancePerPulse(Constants.MEC_DISTANCE_PER_PULSE);
+		//encoderX.setDistancePerPulse(Constants.FOLLOWER_DISTANCE_PER_PULSE);
+		//encoderY.setDistancePerPulse(Constants.FOLLOWER_DISTANCE_PER_PULSE);
 	}
 	
 	public void resetAll(){
@@ -32,8 +32,8 @@ public class ShakerDriveEncoders {
 		encoderBL.reset();
 		encoderBR.reset();
 		
-		encoderX.reset();
-		encoderY.reset();
+		//encoderX.reset();
+		//encoderY.reset();
 	}
 	
 	public double getRealDistance(){

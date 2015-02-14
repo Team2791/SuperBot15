@@ -24,10 +24,10 @@ public class Dashboard {
 		SmartDashboard.putNumber("Spin", Robot.mDrive.getSpin());
 	}
 	public void displayEncoders(){		
-		SmartDashboard.putNumber("Dist from origin**", Robot.encoders.getRealDistance());
+		//SmartDashboard.putNumber("Dist from origin**", Robot.encoders.getRealDistance());
 		
-		SmartDashboard.putNumber("X Distance", Robot.encoders.encoderX.getDistance());
-		SmartDashboard.putNumber("Y Distance", Robot.encoders.encoderY.getDistance());
+		//SmartDashboard.putNumber("X Distance", Robot.encoders.encoderX.getDistance());
+		//SmartDashboard.putNumber("Y Distance", Robot.encoders.encoderY.getDistance());
 		
 		SmartDashboard.putString("Front Left Encoder",String.format("Speed: %f Distance:%f\n", Robot.encoders.encoderFL.getRate(),  Robot.encoders.encoderFL.getDistance()));
 		SmartDashboard.putString("Front Right Encoder.", String.format("Speed: %f Distance:%f\n", Robot.encoders.encoderFR.getRate(),  Robot.encoders.encoderFR.getDistance()));

@@ -13,10 +13,13 @@ public class TeleopRunner {
 	}
 	
 	public void run(){
-		Robot.mDrive.run();
+		//Robot.mDrive.run();
 		Robot.dash.run();
 		Robot.intake.run();
-		Robot.elevator.run();
+		//Robot.elevator.run();
+		Robot.compressor.start();
+		Robot.dropper.run();
+		
 		
 		if(Robot.driver.getRawButton(Constants.BUTTON_LB)){
 			Robot.encoders.resetAll();

@@ -41,6 +41,7 @@ public final class LED {
 
         this.brightness = brightness;
         spi = new SPI(SPIport);
+
         //SPIport = new Port(); //?
     }
 

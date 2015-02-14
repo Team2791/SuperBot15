@@ -47,6 +47,8 @@ public class ElevatorPID{
     
     // ---------------------------------------------------------------------------------    
     
+    public double[] getPresets(){ return dPresets; }
+    
     public void goToPreset(int index){
     	PID_IN_USE = true;
     	setSetpoint(dPresets[index]);

@@ -3,6 +3,7 @@ package org.usfirst.frc.team2791.robot;
 import overriddenClasses.ShakerJoystick;
 import config.*;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Compressor;
 import gameRunners.*;
 import subsystems.*;
 
@@ -15,6 +16,8 @@ public class Robot extends IterativeRobot {
 	public static Elevator elevator;
 	public static Intake intake;
 	public static ShakerJoystick driver, operator;
+	public static Compressor compressor;
+	public static Dropper dropper;
 	
 	public void robotInit() {
 		driver   = new ShakerJoystick(1);
@@ -28,7 +31,11 @@ public class Robot extends IterativeRobot {
     	
     	teleopRunner = new TeleopRunner();
     	autonRunner  = new AutonRunner();
-    }
+    	
+    	compressor = new Compressor();
+    	
+    	dropper = new Dropper();
+	}
 
 	public void autonomousInit(){}
     public void autonomousPeriodic(){}
@@ -43,6 +50,7 @@ public class Robot extends IterativeRobot {
     //public void disabledInit()    { teleopRunner.init();}
     public void disabledPeriodic(){
     	Robot.dash.run();
+    	compressor.stop();
     	if(driver.getRawButton(5) || operator.getRawButton(5)){
 			Robot.encoders.resetAll();
 			Robot.mDrive.reset();

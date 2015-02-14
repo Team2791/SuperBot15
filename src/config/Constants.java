@@ -12,9 +12,10 @@ public class Constants {
 	
 	// --------- drive train --------- //
 	
-	public static final double  MEC_DISTANCE_PER_PULSE   = (6 * Math.PI) / 128.0;
-	public static final boolean MEC_RIGHT_SIDE_REVERSED  = true;
-	public static final boolean CALIBRATION_MODE         = false;
+	public static final double  MEC_DISTANCE_PER_PULSE      = (6 * Math.PI) / 128.0;
+	public static final double  FOLLOWER_DISTANCE_PER_PULSE = (4 * Math.PI) / 128.0; // 4 is random number pls fix to diameter of wheels
+	public static final boolean MEC_RIGHT_SIDE_REVERSED     = true;
+	public static final boolean CALIBRATION_MODE            = false;
 	
 	// --------- joysticks --------- //
 	
@@ -50,8 +51,8 @@ public class Constants {
 	
 	// --------- elevator --------- //
 	
-	public static final double[] ELEVATOR_PRESETS        = {1.0, 2.0, 3.0, 4.0};
-	public static final double   ELEVATOR_OUTPUT_LIMIT   = 0.7;
+	public static final double[] ELEVATOR_PRESETS        = {0.0, 1.0, 2.0, 3.0, 4.0};
+	public static final double   ELEVATOR_OUTPUT_LIMIT   = 0.4;
 	public static final double   ELEVATOR_MAX_HEIGHT     = 6.0;
 	public static final double   ELEVATOR_STOP_ZONE      = 0.1;
 	public static final double   ELEVATOR_DIST_PER_PULSE = (11.0018 / 12.0) / 128.0; // in feet

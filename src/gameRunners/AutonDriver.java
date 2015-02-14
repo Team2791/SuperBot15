@@ -7,19 +7,13 @@ public class AutonDriver{
     protected double minOutput = -1.0;
     protected double previousTime = 0.0;
     protected double currentTime = 0.0;
-	protected double P, I, D;
+    protected double P, I, D;
 	
-    protected double setpointX = 0.0;
-    protected double previousErrorX = 0.0;
-    protected double currentErrorX = 0.0;
-    protected double integratorX = 0.0;
-    protected double outputX = 0.0;
-    
-    protected double setpointY = 0.0;
-    protected double previousErrorY = 0.0;
-    protected double currentErrorY = 0.0;
-    protected double integratorY = 0.0;
-    protected double outputY = 0.0;
+    protected double setpoint = 0.0;
+    protected double previousError = 0.0;
+    protected double currentError = 0.0;
+    protected double integrator = 0.0;
+    protected double output = 0.0;
     
     protected boolean PID_IN_USE = false;
     
@@ -36,11 +30,8 @@ public class AutonDriver{
     }
     
     public void reset(){ // pls fix
-        resetX();
-        resetY();
+        
     }
-    public void resetX(){}
-    public void resetY(){}
     
     public void disable(){
     	PID_IN_USE = false;
@@ -49,70 +40,51 @@ public class AutonDriver{
     
     // ---------------------------------------------------------------------------------    
     
-    public void driveDistance(double x, double y, boolean cont){
-    	
+    public void driveDistance(double distance){
+    	PID_IN_USE = true;
+    	setpoint = distance;
     }
     
-    public double getIXPart(){
-    	if(previousTime == 0.0 || I == 0.0)
-    		return 0.0;
-    	
-    	integratorX += ((currentErrorX + previousErrorX) / 2.0) * (currentTime - previousTime);
-    	
-    	if(integratorX * I > maxOutput)
-    		integratorX = maxOutput / I;
-    	if(integratorX * I < minOutput)
-    		integratorX = minOutput / I;
-    	
-    	return integratorX * I;
+    public void setTarget(double angle){
+    	PID_IN_USE = true;
+    	setpoint = angle;
     }
-    public double getIYPart(){
+    
+    public double getIPart(){
     	if(previousTime == 0.0 || I == 0.0)
     		return 0.0;
     	
-    	integratorY += ((currentErrorY + previousErrorY) / 2.0) * (currentTime - previousTime);
+    	integrator += ((currentError + previousError) / 2.0) * (currentTime - previousTime);
     	
-    	if(integratorY * I > maxOutput)
-    		integratorY = maxOutput / I;
-    	if(integratorY * I < minOutput)
-    		integratorY = minOutput / I;
+    	if(integrator * I > maxOutput)
+    		integrator = maxOutput / I;
+    	if(integrator * I < minOutput)
+    		integrator = minOutput / I;
     	
-    	return integratorY * I;
+    	return integrator * I;
     }
 
-    public double getDXPart(){
+    public double getDPart(){
     	if(previousTime == 0.0 || D == 0.0)
     		return 0.0;
     	else
-    		return D * ((currentErrorX - previousErrorX) / (currentTime - previousTime));
-    }
-    public double getDYPart(){
-    	if(previousTime == 0.0 || D == 0.0)
-    		return 0.0;
-    	else
-    		return D * ((currentErrorY - previousErrorY) / (currentTime - previousTime));
+    		return D * ((currentError - previousError) / (currentTime - previousTime));
     }
     
-    public double getPXPart(){
-    	return currentErrorX * P;
-    }
-    public double getPYPart(){
-    	return currentErrorY * P;
+    public double getPPart(){
+    	return currentError * P;
     }
     
-    public double updateOutputX(double currentVal){
-    	return updateAndGetOutputX(currentVal);
-    }
-    public double updateOutputY(double currentVal){
-    	return updateAndGetOutputY(currentVal);
+    public double updateOutput(double currentVal){
+    	return updateAndGetOutput(currentVal);
     }
     
-    public double updateAndGetOutputX(double cVal){
+    public double updateAndGetOutput(double cVal){
     	currentTime = Timer.getFPGATimestamp();
-    	currentErrorX = cVal - setpointX;
-    	double newOutput = getPXPart() + getIXPart() + getDXPart();
+    	currentError = cVal - setpoint;
+    	double newOutput = getPPart() + getIPart() + getDPart();
     	previousTime = Timer.getFPGATimestamp();
-    	previousErrorX = currentErrorX;
+    	previousError = currentError;
     	
     	if(newOutput > maxOutput)
     		newOutput = maxOutput;
@@ -121,34 +93,6 @@ public class AutonDriver{
     	
     	return newOutput;
     }
-    public double updateAndGetOutputY(double cVal){
-    	currentTime = Timer.getFPGATimestamp();
-    	currentErrorY = cVal - setpointY;
-    	double newOutput = getPYPart() + getIYPart() + getDYPart();
-    	previousTime = Timer.getFPGATimestamp();
-    	previousErrorY = currentErrorY;
-    	
-    	if(newOutput > maxOutput)
-    		newOutput = maxOutput;
-    	if(newOutput < minOutput)
-    		newOutput = minOutput;
-    	
-    	return newOutput;
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    public void setMinOutput(double min) {        minOutput = min; }
+    public void setMaxOutput(double max) {        maxOutput = max; } 
 }
