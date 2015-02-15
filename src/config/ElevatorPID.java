@@ -53,6 +53,10 @@ public class ElevatorPID{
     	PID_IN_USE = true;
     	setSetpoint(dPresets[index]);
     }
+    public void goToPreset(double preset){
+    	PID_IN_USE = true;
+    	setSetpoint(preset);
+    }
     
     public void setOutputManual(double output){
     	PID_IN_USE = false;
@@ -117,9 +121,6 @@ public class ElevatorPID{
         
         return newOutput;
     }
-    
-    
-    
     
     public double getError(){     return currentError; }
     public double getOutput(){    return output; }

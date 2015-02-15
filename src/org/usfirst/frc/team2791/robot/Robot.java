@@ -53,18 +53,12 @@ public class Robot extends IterativeRobot {
     public void disabledPeriodic(){
     	compressor.stop();
     	
+    	if(operator.getRawButton(Constants.BUTTON_SEL))
+    		mDrive.gyro.recalibrate();
     	
-    	/*Robot.dash.debug();
     	
-    	if(driver.getRawButton(5) || operator.getRawButton(5)){
-			Robot.encoders.resetAll();
-			Robot.mDrive.reset();
-			//Robot.elevator.resetEncoder();
-		}
-    	Robot.mDrive.disable();
-    	//Robot.elevator.disable();*/
+    	Robot.dash.debug();
     }
     
-    // public void disabledInit(){ if(INIT){ analyzer.teleopEnd(); } } // analyzer disabled
-    // don't re-enable until robot is actually working because i don't know if analyzer works....
+    public void disabledInit(){ }
 }

@@ -2,6 +2,8 @@ package config;
 
 public class Constants {
 	
+	
+	
 	// --------- drive pid --------- //
 	
 	public static final double GYRO_SENSITIVITY                 = 0.002; // 0.00195
@@ -26,6 +28,7 @@ public class Constants {
 	public static final double AXIS_DEADZONE     = 0.05; // used for rotation
 	public static final double AXIS_SCALE        = 1.00; // used for rotation
 	public static final double ROTATION_RATE     = 50.0; // used for rotation
+	public static final double INTAKE_DEADZONE   = 0.15;
 	
 	public static final int BUTTON_A   = 1;
 	public static final int BUTTON_B   = 2;
@@ -45,6 +48,17 @@ public class Constants {
 	public static final int AXIS_RS_X  = 4;
 	public static final int AXIS_RS_Y  = 5;
 	
+	public static final int POV_TOP       = 0;
+	public static final int POV_TOP_RIGHT = 45;
+	public static final int POV_RIGHT     = 90;
+	public static final int POV_BOT_RIGHT = 135;
+	public static final int POV_BOT       = 180;
+	public static final int POV_BOT_LEFT  = 225;
+	public static final int POV_LEFT      = 270;
+	public static final int POV_TOP_LEFT  = 315;
+	public static final int POV_NONE      = -1;
+	
+	
 	// --------- elevator pid--------- //
 	
 	public static final double ELEVATOR_OUTPUT_TOTE_OFFSET  = 0.08;
@@ -52,12 +66,16 @@ public class Constants {
 	
 	// --------- elevator --------- //
 	
-	public static final double[] ELEVATOR_PRESETS        = {0.0, 1.0, 2.0, 3.0, 4.0};
-	public static final double   ELEVATOR_OUTPUT_LIMIT   = 0.4;
-	public static final double   ELEVATOR_MAX_HEIGHT     = 6.0;
-	public static final double   ELEVATOR_STOP_ZONE      = 0.1;
-	public static final double   ELEVATOR_DIST_PER_PULSE = 70.0 / 12.0 / 11.555 / 128.0; // in feet
-	public static final double   ELEVATOR_MIN_SPEED      = 0.1;
+	public static final double[] ELEVATOR_PRESETS       = {0.0, 1.0, 2.0, 3.0, 4.0};
+	public  static final double ELEVATOR_HOOK_ONE       = 15.0;
+	public  static final double ELEVATOR_HOOK_TWO       = ELEVATOR_HOOK_ONE + 13.5;
+	public  static final double ELEVATOR_HOOK_THREE     = ELEVATOR_HOOK_ONE + 13.5 * 2;
+	public  static final double ELEVATOR_HOOK_FOUR      = ELEVATOR_HOOK_ONE + 13.5 * 3;
+	public  static final double ELEVATOR_OUTPUT_LIMIT   = 0.4;
+	public  static final double ELEVATOR_MAX_HEIGHT     = 70.0;
+	public  static final double ELEVATOR_STOP_ZONE      = 0.15;
+	public  static final double ELEVATOR_DIST_PER_PULSE = 70.0 / 11.555 / 128.0; // 70.0 / 12.0 / ... for feet - also adjust presets
+	public  static final double ELEVATOR_MIN_SPEED      = 0.1;
 	
 	// --------- intake --------- //
 	

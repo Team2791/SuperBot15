@@ -16,11 +16,13 @@ public class Dropper {
 	}
 	
 	public void run(){
-		if(Robot.operator.getRawButton(Constants.BUTTON_X)){
-			piston.set(Value.kForward);
-		}
 		if(Robot.operator.getRawButton(Constants.BUTTON_Y)){
-			piston.set(Value.kReverse);
+			if(getState().equals("Unknown"))
+				raise();
+			else if(getState().equals("Raised"))
+				drop();
+			else
+				raise();
 		}
 	}
 	
@@ -31,5 +33,11 @@ public class Dropper {
 			return "Raised";
 		else
 			return "Unknown";
+	}
+	
+	public void raise(){ piston.set(Value.kForward); }
+	public void drop() {
+		Robot.intake.retract();
+		piston.set(Value.kReverse);
 	}
 }

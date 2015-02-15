@@ -1,10 +1,10 @@
 package subsystems;
 import org.usfirst.frc.team2791.robot.*;
+import edu.wpi.first.wpilibj.SPI;
 
 import config.Constants;
 import config.DrivePID;
 import config.Electronics;
-import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Talon;
 import overriddenClasses.*;
@@ -13,7 +13,7 @@ public class MecanumDrive {
 	public Talon frontLeft, backLeft;
 	public Talon frontRight;
 	public Talon backRight;
-	public Gyro gyro;
+	public ShakerGyro gyro;
 	public ShakerDrive driveTrain;
 	
 	private double spin = 0.0;
@@ -35,8 +35,12 @@ public class MecanumDrive {
 		frontRight  = new Talon(Electronics.FRONT_RIGHT_TALON);
 		backRight   = new Talon(Electronics.BACK_RIGHT_TALON);
 		
-		gyro = new Gyro(Electronics.GYRO);
-		gyro.setSensitivity(Constants.GYRO_SENSITIVITY);
+		try{
+			gyro = new ShakerGyro(SPI.Port.kOnboardCS1);
+			(new Thread(gyro)).start();
+		}catch (InterruptedException e){
+			e.printStackTrace();
+		}		
 		
 		driveTrain  = new ShakerDrive(frontLeft, backLeft, frontRight, backRight);
 		driveTrain.setInvertedMotor(RobotDrive.MotorType.kFrontRight, true);

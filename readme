@@ -1,10 +1,11 @@
 to do
 	adjust all pid stuff
-	
-	retract intake before dropping
-	raise hooks when extending intake
-	
+		
 	gyro....
 	
 	dashboard competition mode
+		multiple dash files....
+	
 	change dropper controls to driver controller
+	
+	bin rotation syntax in intake.java

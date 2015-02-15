@@ -26,8 +26,8 @@ public class Electronics {
 	// --------- elevator --------- //
 	
 	public static final int ELEVATOR_TALON          = 4;
-	public static final int ELEVATOR_LIM_SWITCH_TOP = 6;
-	public static final int ELEVATOR_LIM_SWITCH_BOT = 7;
+	public static final int ELEVATOR_LIM_SWITCH_TOP = 3;
+	public static final int ELEVATOR_LIM_SWITCH_BOT = 2;
 	public static final int TOTE_LIM_SWITCH         = 8;
 	
 	public static final int ELEVATOR_PISTON_FOR     = 3;
@@ -53,9 +53,9 @@ public class Electronics {
 	public static final int ELEVATOR_ENC_A   = 0;
 	public static final int ELEVATOR_ENC_B   = 1;
 	
-	public static final int FOLLOWER_X_ENC_A = 99;
-	public static final int FOLLOWER_X_ENC_B = 99;
+	public static final int FOLLOWER_X_ENC_A = 14;
+	public static final int FOLLOWER_X_ENC_B = 15;
 	
-	public static final int FOLLOWER_Y_ENC_A = 99;
-	public static final int FOLLOWER_Y_ENC_B = 99;
+	public static final int FOLLOWER_Y_ENC_A = 25;
+	public static final int FOLLOWER_Y_ENC_B = 10;
 }

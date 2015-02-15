@@ -26,16 +26,50 @@ public class Intake {
 	}
 	
 	public void run() {
-		if(Robot.operator.getRawButton(Constants.BUTTON_B))
-			extend();
-		else if(Robot.operator.getRawButton(Constants.BUTTON_A))
-			retract();
+		if(Robot.operator.getRawButton(Constants.BUTTON_A)){
+			if(getPistonState().equals("Unknown"))
+				retract();
+			else if(getPistonState().equals("Extended"))
+				retract();
+			else
+				extend();
+		}
 		
-		double input = Robot.operator.getAxis(Constants.AXIS_RS_Y);
-		setSpeedManual(input,input);
+		if(Robot.operator.getRawButton(Constants.BUTTON_X)){
+			if(getPistonState(leftSol).equals("Unknown"))
+				retract(leftSol);
+			else if(getPistonState(leftSol).equals("Extended"))
+				retract(leftSol);
+			else
+				extend(leftSol);
+		}
+		
+		if(Robot.operator.getRawButton(Constants.BUTTON_B)){
+			if(getPistonState(rightSol).equals("Unknown"))
+				retract(rightSol);
+			else if(getPistonState(rightSol).equals("Extended"))
+				retract(rightSol);
+			else
+				extend(rightSol);
+		}
+		
+		
+		
+		double inputY = Robot.operator.getAxis(Constants.AXIS_RS_Y);
+		double inputX = Robot.operator.getAxis(Constants.AXIS_RS_X);
+		
+		// check signs. rs-> = intake right side, rs<- = intake left side
+			// maybe swap to get clockwise/counterclockwise bin rotation
+		if(inputX > Constants.INTAKE_DEADZONE)
+			setSpeedManual(0.0, inputX);
+		else if(inputX < -Constants.INTAKE_DEADZONE)
+			setSpeedManual(inputX, 0.0);
+		else
+			setSpeedManual(inputY,inputY);		
 	}
 	
-	public void extend() {		
+	public void extend() {
+		Robot.dropper.raise();
 		leftSol.set(Value.kForward);
 		rightSol.set(Value.kForward);
 	}
@@ -48,6 +82,9 @@ public class Intake {
 		rightTalon.set(0.0);
 	}
 	
+	public void extend(DoubleSolenoid sol) { sol.set(Value.kForward); }
+	public void retract(DoubleSolenoid sol){ sol.set(Value.kReverse); }
+	
 	public void setSpeedManual(double leftSpeed, double rightSpeed) {
 		this.setSpeeds(leftSpeed, rightSpeed);
 	}
@@ -55,5 +92,22 @@ public class Intake {
 	private void setSpeeds(double leftSpeed, double rightSpeed){ 
 		leftTalon.set(leftSpeed);
 		rightTalon.set(-rightSpeed);
+	}
+	
+	public String getPistonState(){
+		if(leftSol.get().equals(Value.kReverse))
+			return "Retracted";
+		else if(leftSol.get().equals(Value.kForward))
+			return "Extended";
+		else
+			return "Unknown";
+	}
+	public String getPistonState(DoubleSolenoid sol){
+		if(sol.get().equals(Value.kReverse))
+			return "Retracted";
+		else if(sol.get().equals(Value.kForward))
+			return "Extended";
+		else
+			return "Unknown";
 	}
 }
