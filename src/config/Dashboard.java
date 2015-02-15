@@ -10,12 +10,14 @@ public class Dashboard {
 		pref = Preferences.getInstance();
 	}
 	
-	public void run(){
+	public void debug(){
 		displayJoysticks();
 		displayEncoders();
 		displayDrive();
 		displayDrivePID();
 		displayElevatorPID();
+		displayElevator();
+		displayDropper();
 	}
 	
 	public void displayJoysticks(){
@@ -48,14 +50,21 @@ public class Dashboard {
 		SmartDashboard.putNumber("Gyro Error Deg", Robot.mDrive.gyro.getAngle() - Robot.mDrive.getTargetAngle());
 	}
 	public void displayElevatorPID(){
-		SmartDashboard.putNumber("Elevator Position", Robot.elevator.getPosition());
+		SmartDashboard.putNumber("Elevator Height", Robot.elevator.getHeight());
 		SmartDashboard.putNumber("Elevator rate", Robot.elevator.encoder.getRate());
-		
 		SmartDashboard.putNumber("Elevator Output", Robot.elevator.elevatorPID.getOutput());
-		SmartDashboard.putNumber("Target Height", Robot.elevator.elevatorPID.getSetpoint());
-		SmartDashboard.putNumber("Height error", Robot.elevator.getPosition() - Robot.elevator.getSetpoint());
+		SmartDashboard.putNumber("Height error", Robot.elevator.getHeight() - Robot.elevator.getSetpoint());
 	}
-	
+	public void displayElevator(){
+		SmartDashboard.putNumber("Elevator preset", Robot.elevator.getPreset());
+		SmartDashboard.putNumber("Elevator setpoint", Robot.elevator.elevatorPID.getSetpoint());
+		
+		SmartDashboard.putString("Elevator control", Robot.elevator.getControlState());
+		SmartDashboard.putString("Elevator Piston", Robot.elevator.getPistonState());
+	}
+	public void displayDropper(){
+		SmartDashboard.putString("Drop state", Robot.dropper.getState());
+	}
 	
 	
 	

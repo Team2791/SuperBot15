@@ -26,7 +26,7 @@ public class Intake {
 	}
 	
 	public void run() {
-		if(Robot.operator.getRawButton(Constants.BUTTON_Y))
+		if(Robot.operator.getRawButton(Constants.BUTTON_B))
 			extend();
 		else if(Robot.operator.getRawButton(Constants.BUTTON_A))
 			retract();

@@ -21,7 +21,7 @@ public class Constants {
 	
 	public static final double JOYSTICK_DEADZONE = 0.03;
 	public static final double JOYSTICK_SCALE    = 1.00;
-	public static final double ELEVATOR_SCALE    = 1.00; // used on elevator teleop
+	public static final double ELEVATOR_SCALE    = 0.70; // used on elevator teleop
 	public static final double ELEVATOR_DEADZONE = 0.10; // used on elevator teleop
 	public static final double AXIS_DEADZONE     = 0.05; // used for rotation
 	public static final double AXIS_SCALE        = 1.00; // used for rotation
@@ -47,7 +47,8 @@ public class Constants {
 	
 	// --------- elevator pid--------- //
 	
-	public static final double ELEVATOR_OUTPUT_TOTE_OFFSET = 0.08;
+	public static final double ELEVATOR_OUTPUT_TOTE_OFFSET  = 0.08;
+	public static final double ELEVATOR_PISTON_HEIGHT_SCALE = 0.70;
 	
 	// --------- elevator --------- //
 	
@@ -55,7 +56,8 @@ public class Constants {
 	public static final double   ELEVATOR_OUTPUT_LIMIT   = 0.4;
 	public static final double   ELEVATOR_MAX_HEIGHT     = 6.0;
 	public static final double   ELEVATOR_STOP_ZONE      = 0.1;
-	public static final double   ELEVATOR_DIST_PER_PULSE = (11.0018 / 12.0) / 128.0; // in feet
+	public static final double   ELEVATOR_DIST_PER_PULSE = 70.0 / 12.0 / 11.555 / 128.0; // in feet
+	public static final double   ELEVATOR_MIN_SPEED      = 0.1;
 	
 	// --------- intake --------- //
 	

@@ -14,11 +14,15 @@ public class TeleopRunner {
 	
 	public void run(){
 		//Robot.mDrive.run();
-		Robot.dash.run();
+		Robot.mDrive.plainDrive();
+		Robot.dash.debug();
 		Robot.intake.run();
 		//Robot.elevator.run();
+		Robot.elevator.testRun();
 		Robot.compressor.start();
 		Robot.dropper.run();
+		
+		
 		
 		
 		if(Robot.driver.getRawButton(Constants.BUTTON_LB)){

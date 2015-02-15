@@ -30,18 +30,19 @@ public class Electronics {
 	public static final int ELEVATOR_LIM_SWITCH_BOT = 7;
 	public static final int TOTE_LIM_SWITCH         = 8;
 	
-	public static final int DROPPER_SOLE_LEFT_UP    = 0;
-	public static final int DROPPER_SOLE_LEFT_DOWN  = 1;
-	public static final int DROPPER_SOLE_RIGHT_UP   = 2;
-	public static final int DROPPER_SOLE_RIGHT_DOWN = 3;
+	public static final int ELEVATOR_PISTON_FOR     = 3;
+	public static final int ELEVATOR_PISTON_REV     = 2;
+	
+	public static final int DROPPER_PISTON_UP    = 0;
+	public static final int DROPPER_PISTON_DOWN  = 1;
 		
 	// -------------encoders---------------------- //
 	
 	public static final int FRONT_LEFT_ENC_A  = 2;
 	public static final int FRONT_LEFT_ENC_B  = 3;
 	
-	public static final int FRONT_RIGHT_ENC_A = 0;
-	public static final int FRONT_RIGHT_ENC_B = 1;
+	public static final int FRONT_RIGHT_ENC_A = 12;
+	public static final int FRONT_RIGHT_ENC_B = 13;
 	
 	public static final int BACK_LEFT_ENC_A  = 23;
 	public static final int BACK_LEFT_ENC_B  = 24;
@@ -49,8 +50,8 @@ public class Electronics {
 	public static final int BACK_RIGHT_ENC_A = 14;
 	public static final int BACK_RIGHT_ENC_B = 15;
 	
-	public static final int ELEVATOR_ENC_A   = 12;
-	public static final int ELEVATOR_ENC_B   = 13;
+	public static final int ELEVATOR_ENC_A   = 0;
+	public static final int ELEVATOR_ENC_B   = 1;
 	
 	public static final int FOLLOWER_X_ENC_A = 99;
 	public static final int FOLLOWER_X_ENC_B = 99;

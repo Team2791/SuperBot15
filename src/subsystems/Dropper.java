@@ -8,25 +8,28 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 public class Dropper {
-	public static DoubleSolenoid rightSide;
-	public static DoubleSolenoid leftSide;
+	public static DoubleSolenoid piston;
 	public static boolean        triggeredDrop = false;
 	
 	public Dropper(){
-		rightSide = new DoubleSolenoid(Electronics.DROPPER_SOLE_RIGHT_DOWN, Electronics.DROPPER_SOLE_RIGHT_UP);
-		leftSide  = new DoubleSolenoid(Electronics.DROPPER_SOLE_LEFT_DOWN, Electronics.DROPPER_SOLE_LEFT_UP);
+		piston = new DoubleSolenoid(Electronics.DROPPER_PISTON_DOWN, Electronics.DROPPER_PISTON_UP);
 	}
 	
 	public void run(){
-		if(Robot.operator.getRawButton(Constants.BUTTON_ST))
-			setPosition(Value.kForward);
-		
-		if(Robot.operator.getRawButton(Constants.BUTTON_SEL))
-			setPosition(Value.kReverse);
+		if(Robot.operator.getRawButton(Constants.BUTTON_X)){
+			piston.set(Value.kForward);
+		}
+		if(Robot.operator.getRawButton(Constants.BUTTON_Y)){
+			piston.set(Value.kReverse);
+		}
 	}
 	
-	public void setPosition(Value val){
-		rightSide.set(val);
-		leftSide.set(val);
+	public String getState() {
+		if(piston.get().equals(Value.kForward))
+			return "Dropped";
+		else if(piston.get().equals(Value.kReverse))
+			return "Raised";
+		else
+			return "Unknown";
 	}
 }

@@ -18,6 +18,7 @@ public class Robot extends IterativeRobot {
 	public static ShakerJoystick driver, operator;
 	public static Compressor compressor;
 	public static Dropper dropper;
+	public static ShakerCamera camera;
 	
 	public void robotInit() {
 		driver   = new ShakerJoystick(1);
@@ -33,6 +34,7 @@ public class Robot extends IterativeRobot {
     	autonRunner  = new AutonRunner();
     	
     	compressor = new Compressor();
+    	camera = new ShakerCamera();
     	
     	dropper = new Dropper();
 	}
@@ -49,15 +51,18 @@ public class Robot extends IterativeRobot {
     
     //public void disabledInit()    { teleopRunner.init();}
     public void disabledPeriodic(){
-    	Robot.dash.run();
     	compressor.stop();
+    	
+    	
+    	/*Robot.dash.debug();
+    	
     	if(driver.getRawButton(5) || operator.getRawButton(5)){
 			Robot.encoders.resetAll();
 			Robot.mDrive.reset();
 			//Robot.elevator.resetEncoder();
 		}
     	Robot.mDrive.disable();
-    	//Robot.elevator.disable();
+    	//Robot.elevator.disable();*/
     }
     
     // public void disabledInit(){ if(INIT){ analyzer.teleopEnd(); } } // analyzer disabled

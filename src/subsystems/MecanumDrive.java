@@ -53,6 +53,13 @@ public class MecanumDrive {
 		rotationPID.setMaxOutput(Constants.DRIVE_PID_OUTPUT);
 		rotationPID.setMinOutput(-Constants.DRIVE_PID_OUTPUT);
 	}
+	
+	public void plainDrive(){
+		driveTrain.mecanumDrive_Cartesian(Robot.driver.getx(), Robot.driver.gety(), Robot.driver.getAxis(Constants.AXIS_RS_X), 0);
+	}
+	
+	
+	
 	public void run() {
 		double driverInput;
 		

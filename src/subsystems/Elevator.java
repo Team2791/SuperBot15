@@ -5,6 +5,8 @@ import org.usfirst.frc.team2791.robot.Robot;
 import config.*;
 import edu.wpi.first.wpilibj.CounterBase;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.Talon;
@@ -21,6 +23,7 @@ public class Elevator{
 	public         Encoder encoder;
 	public  static DigitalInput topSwitch;
 	public  static DigitalInput botSwitch;
+	public  static DoubleSolenoid piston;
 	
 	// state variables 
 	public boolean  hasTote            = false;
@@ -31,6 +34,8 @@ public class Elevator{
 	private boolean triggeredStart     = false;
 	private boolean reachedHooks[]     = {true, false, false, false, false};
 	private Timer   caseTimer;
+	private static boolean manualControl;
+	private static boolean triggeredSwap;
 	
 	
 	public Elevator() {
@@ -44,6 +49,8 @@ public class Elevator{
 		encoder = new Encoder(Electronics.ELEVATOR_ENC_A, Electronics.ELEVATOR_ENC_B, false, CounterBase.EncodingType.k4X);
 		encoder.setDistancePerPulse(Constants.ELEVATOR_DIST_PER_PULSE);
 		
+		piston = new DoubleSolenoid(Electronics.ELEVATOR_PISTON_FOR, Electronics.ELEVATOR_PISTON_REV);
+		
 
 		PID_P = 3.00;
 		PID_I = 0.50;
@@ -52,9 +59,39 @@ public class Elevator{
 		elevatorPID = new ElevatorPID(PID_P, PID_I, PID_D);
 		elevatorPID.setMaxOutput(Constants.ELEVATOR_OUTPUT_LIMIT);
 		elevatorPID.setMinOutput(-Constants.ELEVATOR_OUTPUT_LIMIT);
+		
+		manualControl = true;
+		triggeredSwap = false;
+	}
+	
+	public void testRun(){
+		lift.set(-Robot.operator.getAxis(Constants.AXIS_LS_Y) * Constants.ELEVATOR_SCALE);
+		
+		//if(encoder.getDistance() > elevatorPID.getPresets()[1] * Constants.ELEVATOR_PISTON_HEIGHT_SCALE)
+		//	piston.set(Value.kForward);
+		//else
+		//	piston.set(Value.kReverse);
+		
+		if(Robot.operator.getRawButton(Constants.BUTTON_LS))
+			piston.set(Value.kForward);
+		if(Robot.operator.getRawButton(Constants.BUTTON_SEL))
+			piston.set(Value.kReverse);
+		
+		if(Robot.operator.getRawButton(Constants.BUTTON_ST))
+			encoder.reset();
 	}
 	
 	public void run() {
+		
+		// --------- swap mode --------- //
+		if(Robot.operator.getRawButton(Constants.BUTTON_SEL) && !triggeredSwap){
+			triggeredSwap = true;
+		}
+		if(triggeredInc && !Robot.operator.getRawButton(Constants.BUTTON_SEL)){
+			//manualControl = !manualControl;
+			triggeredSwap = false;
+		}
+		
 		// --------- manual increase --------- //
 		if(Robot.operator.getRawButton(Constants.BUTTON_LB)){
 			triggeredInc = true;
@@ -73,39 +110,18 @@ public class Elevator{
 			triggeredDec = false;
 		}
 		
-		
-		// --------- case conditions --------- //
-		if(reachedHooks[currentPresetIndex] && currentPresetIndex != 0){
-			lastPreset = currentPresetIndex;
-			currentPresetIndex = 0;
-		}
-		
-		if(encoder.getDistance() > elevatorPID.getPresets()[currentPresetIndex] && currentPresetIndex != 0){
-			caseTimer.start();
-		}
-		
-		if(caseTimer.get() >= 3.0){ // 3 seconds to secure on hook
-			reachedHooks[currentPresetIndex] = true;
-			caseTimer.stop();
-			caseTimer.reset();
-		}
-		
-		// --------- press sel => start lifting --------- //
-		if(Robot.driver.getRawButton(Constants.BUTTON_SEL)){
-			triggeredStart = true;
-		}
-		if(triggeredStart && !Robot.operator.getRawButton(Constants.BUTTON_SEL)){
-			currentPresetIndex = lastPreset - 1;
-			triggeredStart = false;
-		}
+		if(!manualControl)
+			autoLift();
 		
 		
+
 		goToPreset(currentPresetIndex);
-		// --------- set output --------- //
-		if(elevatorPID.checkPIDUse())
-			elevatorPID.setOutput(-elevatorPID.updateAndGetOutput(encoder.getDistance()));
-		//else
-		//	elevatorPID.setOutputManual(-Robot.operator.getAxis(Constants.AXIS_LS_Y));
+		elevatorPID.setOutput(-elevatorPID.updateAndGetOutput(encoder.getDistance()));
+		
+		if(encoder.getDistance() > elevatorPID.getPresets()[1] * Constants.ELEVATOR_PISTON_HEIGHT_SCALE)
+			piston.set(Value.kForward);
+		else
+			piston.set(Value.kReverse);
 	}
 	
 	public void reset(){
@@ -116,8 +132,14 @@ public class Elevator{
 	public void setTalon(double power)         { lift.set(power); }
 	public void setOutputManual(double output) { elevatorPID.setOutputManual(output); }
 	
-	public double getPosition()        { return encoder.getDistance(); }
-	public double getSetpoint()        { return elevatorPID.getSetpoint(); }
+	public double getHeight() { return encoder.getDistance(); }
+	public double getPreset() { return currentPresetIndex; }
+	public double getSetpoint(){
+		if(currentPresetIndex != elevatorPID.getSetpoint())
+			return -1;
+		else
+			return elevatorPID.getSetpoint();
+	}
 	
 	public void goToPreset(int preset) { elevatorPID.goToPreset(preset); }
 	public void disable()              { elevatorPID.disable(); }
@@ -128,5 +150,48 @@ public class Elevator{
 	}
 	public boolean atBot() {
 		return botSwitch.get() || encoder.get() < Constants.ELEVATOR_STOP_ZONE;
+	}
+	
+	public String getControlState(){
+		if(manualControl)
+			return "Manual";
+		else
+			return "Automatic";
+	}
+	
+	public String getPistonState(){
+		if(piston.get().equals(Value.kForward))
+			return "Extended";
+		else if(piston.get().equals(Value.kReverse))
+			return "Retracted";
+		else
+			return "Unknown";
+	}
+	
+	public void autoLift(){
+		// --------- case conditions --------- //
+		if(reachedHooks[currentPresetIndex] && currentPresetIndex != 0){
+			lastPreset = currentPresetIndex;
+			currentPresetIndex = 0;
+		}
+				
+		if(encoder.getDistance() > elevatorPID.getPresets()[currentPresetIndex] && currentPresetIndex != 0){
+			caseTimer.start();
+		}
+				
+		if(caseTimer.get() >= 3.0){ // 3 seconds to secure on hook
+			reachedHooks[currentPresetIndex] = true;
+			caseTimer.stop();
+			caseTimer.reset();
+		}
+				
+		// --------- press st => start lifting --------- //
+		if(Robot.driver.getRawButton(Constants.BUTTON_ST)){
+			triggeredStart = true;
+		}
+		if(triggeredStart && !Robot.operator.getRawButton(Constants.BUTTON_ST)){
+			currentPresetIndex = lastPreset - 1;
+			triggeredStart = false;
+		}
 	}
 }
