@@ -117,4 +117,5 @@ public class DrivePID{
     public void setSetpoint(double newSetpoint) { setpoint = newSetpoint; }
     public void setMinOutput(double min) {        minOutput = min; }
     public void setMaxOutput(double max) {        maxOutput = max; }        
+    public void setDeadzone(double zone) {        deadZone = zone; }
 }

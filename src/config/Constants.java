@@ -2,20 +2,25 @@ package config;
 
 public class Constants {
 	
-	
+	// auton PID constnats
+	public static final double AUTON_DRIVE_X_PID_OUTPUT     		= 0.6;
+	public static final double AUTON_DRIVE_Y_PID_OUTPUT     		= 0.4;
+	public static final double AUTON_DRIVE_ERROR_THRESHOLD			= 0.2;
+	public static final double AUTON_ANGLE_ERROR_THRESHOLD			= 5.0;
 	
 	// --------- drive pid --------- //
 	
 	public static final double GYRO_SENSITIVITY                 = 0.002; // 0.00195
 	public static double       JOYSTICK_DEG_RATE                = 420.0; // not final because inherits from dashboard
-	public static final double DRIVE_PID_OUTPUT                 = 0.3;
+	public static final double DRIVE_PID_OUTPUT                 = 0.5;
 	public static final double DRIVE_PID_ERROR_THRESHOLD        = 1.5;
 	public static final double DRIVE_PID_ERROR_THRESHOLD_MOVING = 5.0;
+	public static final double DRIVE_PID_DISENGAGE_THRESHOLD    = 0.1;
 	
 	// --------- drive train --------- //
 	
 	public static final double  MEC_DISTANCE_PER_PULSE      = (6 * Math.PI) / 128.0;
-	public static final double  FOLLOWER_DISTANCE_PER_PULSE = (4 * Math.PI) / 128.0; // 4 is random number pls fix to diameter of wheels
+	public static final double  FOLLOWER_DISTANCE_PER_PULSE = (4 * Math.PI) / 128.0 / 12.0;
 	public static final boolean MEC_RIGHT_SIDE_REVERSED     = true;
 	public static final boolean CALIBRATION_MODE            = false;
 	
@@ -66,16 +71,16 @@ public class Constants {
 	
 	// --------- elevator --------- //
 	
-	public static final double[] ELEVATOR_PRESETS       = {0.0, 1.0, 2.0, 3.0, 4.0};
-	public  static final double ELEVATOR_HOOK_ONE       = 15.0;
-	public  static final double ELEVATOR_HOOK_TWO       = ELEVATOR_HOOK_ONE + 13.5;
-	public  static final double ELEVATOR_HOOK_THREE     = ELEVATOR_HOOK_ONE + 13.5 * 2;
-	public  static final double ELEVATOR_HOOK_FOUR      = ELEVATOR_HOOK_ONE + 13.5 * 3;
-	public  static final double ELEVATOR_OUTPUT_LIMIT   = 0.4;
+	public static final double[] ELEVATOR_PRESETS       = {0.0, 6.0, 20.6, 35.85, 50.65, 65.72};
+	public  static final double ELEVATOR_OUTPUT_LIMIT   = 0.65;
+	public  static final double ELEVATOR_OUTPUT_LIMIT_CLOSE = 0.3;
+	public  static final double ELEVATOR_DOWNWARDS_SCALE = 0.30;
 	public  static final double ELEVATOR_MAX_HEIGHT     = 70.0;
 	public  static final double ELEVATOR_STOP_ZONE      = 0.15;
+	public  static final double ELEVATOR_SPEED_THRESHOLD = 5;
 	public  static final double ELEVATOR_DIST_PER_PULSE = 70.0 / 11.555 / 128.0; // 70.0 / 12.0 / ... for feet - also adjust presets
 	public  static final double ELEVATOR_MIN_SPEED      = 0.1;
+	public  static final double ELEVATOR_PISTON_ERROR_THRESHOLD= 3;
 	
 	// --------- intake --------- //
 	

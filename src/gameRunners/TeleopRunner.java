@@ -9,16 +9,17 @@ public class TeleopRunner {
 	}
 	
 	public void init(){
-		Robot.encoders.resetAll();
+		//Robot.encoders.resetAll();
+		Robot.elevator.init();
 	}
 	
 	public void run(){
-		//Robot.mDrive.run();
-		Robot.mDrive.plainDrive();
+		Robot.mDrive.run();
+//		Robot.mDrive.plainDrive();
 		Robot.dash.debug();
 		Robot.intake.run();
-		//Robot.elevator.run();
-		Robot.elevator.testRun();
+		Robot.elevator.run();
+		//Robot.elevator.testRun();
 		Robot.compressor.start();
 		Robot.dropper.run();
 		

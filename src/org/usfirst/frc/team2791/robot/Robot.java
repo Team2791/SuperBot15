@@ -21,8 +21,8 @@ public class Robot extends IterativeRobot {
 	public static ShakerCamera camera;
 	
 	public void robotInit() {
-		driver   = new ShakerJoystick(1);
-		operator = new ShakerJoystick(2);
+		driver   = new ShakerJoystick(0);
+		operator = new ShakerJoystick(1);
 		
 		encoders = new ShakerDriveEncoders();
     	dash     = new Dashboard();
@@ -37,10 +37,22 @@ public class Robot extends IterativeRobot {
     	camera = new ShakerCamera();
     	
     	dropper = new Dropper();
+    	
+    	
+    	
+    	
 	}
 
-	public void autonomousInit(){}
-    public void autonomousPeriodic(){}
+	public void autonomousInit(){
+		autonRunner.reset();
+		autonRunner.runInit();
+		autonRunner.startAuton();
+	}
+    public void autonomousPeriodic(){
+		dash.debug();
+		
+    	autonRunner.runPeriodic();
+    }
 
     public void teleopInit()    { teleopRunner.init();}
     public void teleopPeriodic(){
@@ -49,16 +61,24 @@ public class Robot extends IterativeRobot {
     
     public void testPeriodic(){}
     
-    //public void disabledInit()    { teleopRunner.init();}
+    public void disabledInit() {
+    	//teleopRunner.init();
+    	elevator.disable();
+    	autonRunner.reset();
+    }
     public void disabledPeriodic(){
     	compressor.stop();
+    	mDrive.disable();
+    	elevator.disabledPeriodic();
     	
-    	if(operator.getRawButton(Constants.BUTTON_SEL))
+    	if(operator.getRawButton(Constants.BUTTON_SEL) || driver.getRawButton(Constants.BUTTON_SEL)){
     		mDrive.gyro.recalibrate();
+    		elevator.encoder.reset();
+    		encoders.encoderX.reset();
+    		encoders.encoderY.reset();
+    	}
     	
     	
     	Robot.dash.debug();
     }
-    
-    public void disabledInit(){ }
 }

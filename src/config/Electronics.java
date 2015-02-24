@@ -8,10 +8,10 @@ public class Electronics {
 	
 	// --------- drive train --------- //
 	
-	public static final int FRONT_LEFT_TALON  = 3;
-	public static final int BACK_LEFT_TALON   = 2;
-	public static final int FRONT_RIGHT_TALON = 1;
-	public static final int BACK_RIGHT_TALON  = 0;
+	public static final int FRONT_LEFT_TALON  = 0; //3
+	public static final int BACK_LEFT_TALON   = 1; //2
+	public static final int FRONT_RIGHT_TALON = 3; //1
+	public static final int BACK_RIGHT_TALON  = 2; //0
 	
 	// --------- intake --------- //
 	
@@ -33,13 +33,13 @@ public class Electronics {
 	public static final int ELEVATOR_PISTON_FOR     = 3;
 	public static final int ELEVATOR_PISTON_REV     = 2;
 	
-	public static final int DROPPER_PISTON_UP    = 0;
-	public static final int DROPPER_PISTON_DOWN  = 1;
+	public static final int DROPPER_PISTON_UP    = 1;
+	public static final int DROPPER_PISTON_DOWN  = 0;
 		
 	// -------------encoders---------------------- //
 	
-	public static final int FRONT_LEFT_ENC_A  = 2;
-	public static final int FRONT_LEFT_ENC_B  = 3;
+	public static final int FRONT_LEFT_ENC_A  = 30;
+	public static final int FRONT_LEFT_ENC_B  = 31;
 	
 	public static final int FRONT_RIGHT_ENC_A = 12;
 	public static final int FRONT_RIGHT_ENC_B = 13;
@@ -47,14 +47,14 @@ public class Electronics {
 	public static final int BACK_LEFT_ENC_A  = 23;
 	public static final int BACK_LEFT_ENC_B  = 24;
 	
-	public static final int BACK_RIGHT_ENC_A = 14;
-	public static final int BACK_RIGHT_ENC_B = 15;
+	public static final int BACK_RIGHT_ENC_A = 15;
+	public static final int BACK_RIGHT_ENC_B = 14;
 	
 	public static final int ELEVATOR_ENC_A   = 0;
 	public static final int ELEVATOR_ENC_B   = 1;
 	
-	public static final int FOLLOWER_X_ENC_A = 14;
-	public static final int FOLLOWER_X_ENC_B = 15;
+	public static final int FOLLOWER_X_ENC_A = 21;
+	public static final int FOLLOWER_X_ENC_B = 22;
 	
 	public static final int FOLLOWER_Y_ENC_A = 25;
 	public static final int FOLLOWER_Y_ENC_B = 10;

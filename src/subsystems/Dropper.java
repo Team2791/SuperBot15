@@ -16,21 +16,35 @@ public class Dropper {
 	}
 	
 	public void run(){
-		if(Robot.operator.getRawButton(Constants.BUTTON_Y)){
+		/*if(Robot.operator.getRawButton(Constants.BUTTON_Y)){
 			if(getState().equals("Unknown"))
 				raise();
 			else if(getState().equals("Raised"))
 				drop();
 			else
 				raise();
+		}*/
+		
+		//drop();
+		
+		
+		if(Robot.operator.getPOV(0) == Constants.POV_TOP)
+			this.raise();
+		if(Robot.operator.getPOV(0) == Constants.POV_BOT){
+			this.drop();
+			Robot.elevator.goToPreset(0);
 		}
+		
+		
+		
+		
 	}
 	
 	public String getState() {
 		if(piston.get().equals(Value.kForward))
-			return "Dropped";
-		else if(piston.get().equals(Value.kReverse))
 			return "Raised";
+		else if(piston.get().equals(Value.kReverse))
+			return "Dropped";
 		else
 			return "Unknown";
 	}

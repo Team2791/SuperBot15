@@ -50,7 +50,7 @@ public class ElevatorPID{
     public double[] getPresets(){ return dPresets; }
     
     public void goToPreset(int index){
-    	PID_IN_USE = true;
+    	PID_IN_USE = true;    	
     	setSetpoint(dPresets[index]);
     }
     public void goToPreset(double preset){
@@ -64,16 +64,16 @@ public class ElevatorPID{
     }
     
     public void setOutput(double output){    	
-    	if((Robot.elevator.atTop() || Robot.elevator.atBot()) && output != 0.0)
-    		output = 0.0;
+    	//if((Robot.elevator.atTop() || Robot.elevator.atBot()) && output != 0.0)
+    	//	output = 0.0;
     	
     	Robot.elevator.setTalon(output);
     }
     
     public void setOutputFeedForward(double output){
-    	if(Robot.elevator.hasTote)
-    		setOutput(output + Constants.ELEVATOR_OUTPUT_TOTE_OFFSET);
-    	else
+//    	if(Robot.elevator.hasTote)
+//    		setOutput(output + Constants.ELEVATOR_OUTPUT_TOTE_OFFSET);
+//    	else
     		setOutput(output);
     }
     
@@ -118,6 +118,8 @@ public class ElevatorPID{
         	newOutput = maxOutput;
         else if(newOutput < minOutput)
         	newOutput = minOutput;
+        
+        
         
         return newOutput;
     }

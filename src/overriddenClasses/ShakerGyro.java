@@ -7,7 +7,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ShakerGyro extends SensorBase implements Runnable {
 	// constants from analog devices code
+	@SuppressWarnings("unused")
 	private byte ADXRS453_READ  	   = (byte) (1 << 7);
+	@SuppressWarnings("unused")
 	private byte ADXRS453_WRITE        = (1 << 6);
 	private byte ADXRS453_SENSOR_DATA  = (1 << 5);
 	
@@ -28,6 +30,8 @@ public class ShakerGyro extends SensorBase implements Runnable {
 	private static final double calibrationTime = 5.0;
 	private static final int updateDelayMs = 1000 / 100; // run at 100 Hz
 	
+	private boolean calibrated = false;
+	
 	public ShakerGyro(SPI.Port port) throws InterruptedException {
 		m_spi = new SPI(port);
 		m_spi.setClockRate(4000000); // set to 4 MHz because that's the rRio's max, gyro can do 8 MHz
@@ -47,8 +51,10 @@ public class ShakerGyro extends SensorBase implements Runnable {
 		while(true) {
 			// first check if we need to run a calibrate loop
 			if(recalibrate) {
+				calibrated = false;
 				recalibrate = false;
 				calibrate();
+				calibrated = true;
 			} else {
 				update();
 			}
@@ -70,7 +76,6 @@ public class ShakerGyro extends SensorBase implements Runnable {
 		}
 		// add in the offset calulated during calibration
 		rate -= rateOffset;
-		SmartDashboard.putNumber("Gyro rate", rate);
 		return rate;
 	}
 	
@@ -95,7 +100,6 @@ public class ShakerGyro extends SensorBase implements Runnable {
 	
 	// tell the gyro to recalibrate in paralell to calling thread
 	public void recalibrate() {
-		
 		recalibrate = true;
 	}
 	

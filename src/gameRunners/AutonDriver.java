@@ -14,6 +14,8 @@ public class AutonDriver{
     protected double currentError = 0.0;
     protected double integrator = 0.0;
     protected double output = 0.0;
+    protected double deadZone = 0.0;
+    protected boolean disabled = false;
     
     protected boolean PID_IN_USE = false;
     
@@ -76,7 +78,12 @@ public class AutonDriver{
     }
     
     public double updateOutput(double currentVal){
-    	return updateAndGetOutput(currentVal);
+    	double normalOutput = updateAndGetOutput(currentVal);
+    	
+    	if(currentError < deadZone && currentError > -deadZone)
+        	return 0.0;
+        else
+        	return normalOutput;
     }
     
     public double updateAndGetOutput(double cVal){
@@ -86,6 +93,9 @@ public class AutonDriver{
     	previousTime = Timer.getFPGATimestamp();
     	previousError = currentError;
     	
+    	if(disabled)
+    		return 0;
+    	
     	if(newOutput > maxOutput)
     		newOutput = maxOutput;
     	if(newOutput < minOutput)
@@ -93,6 +103,11 @@ public class AutonDriver{
     	
     	return newOutput;
     }
+    
+    public double getSetpoint(){ return setpoint; }
     public void setMinOutput(double min) {        minOutput = min; }
     public void setMaxOutput(double max) {        maxOutput = max; } 
+    public double getError() { return currentError; }
+    public void setDeadzone(double zone) {        deadZone = zone; }
+    public void setDisabled(boolean disabled) { this.disabled = disabled; }
 }

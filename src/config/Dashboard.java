@@ -1,13 +1,16 @@
 package config;
 import org.usfirst.frc.team2791.robot.*;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Dashboard {
 	Preferences pref;
+	DigitalInput moreBoardTest;
 	public Dashboard(){
 		pref = Preferences.getInstance();
+		moreBoardTest = new DigitalInput(12);
 	}
 	
 	public void debug(){
@@ -18,6 +21,9 @@ public class Dashboard {
 		debugElevatorPID();
 		debugElevator();
 		debugDropper();
+		debugAuton();
+		
+		SmartDashboard.putBoolean("More Board Working", !moreBoardTest.get());
 	}
 	
 	public void debugJoysticks(){
@@ -25,22 +31,27 @@ public class Dashboard {
 		SmartDashboard.putNumber("Driver Y", Robot.driver.gety());
 		SmartDashboard.putNumber("Spin", Robot.mDrive.getSpin());
 	}
+	
 	public void debugEncoders(){		
-		//SmartDashboard.putNumber("Dist from origin**", Robot.encoders.getRealDistance());
+		SmartDashboard.putNumber("Dist from origin", Robot.encoders.getRealDistance());
 		
-		//SmartDashboard.putNumber("X Distance", Robot.encoders.encoderX.getDistance());
-		//SmartDashboard.putNumber("Y Distance", Robot.encoders.encoderY.getDistance());
+		SmartDashboard.putNumber("X Distance", Robot.encoders.encoderX.getDistance());
+		SmartDashboard.putNumber("Y Distance", Robot.encoders.encoderY.getDistance());
 		
-		SmartDashboard.putString("Front Left Encoder",String.format("Speed: %f Distance:%f\n", Robot.encoders.encoderFL.getRate(),  Robot.encoders.encoderFL.getDistance()));
-		SmartDashboard.putString("Front Right Encoder.", String.format("Speed: %f Distance:%f\n", Robot.encoders.encoderFR.getRate(),  Robot.encoders.encoderFR.getDistance()));
-		SmartDashboard.putString("Back Left Encoder.", String.format("Speed: %f Distance:%f\n", Robot.encoders.encoderBL.getRate(),  Robot.encoders.encoderBL.getDistance()));
-		SmartDashboard.putString("Back Right Encoder.", String.format("Speed: %f Distance:%f\n", Robot.encoders.encoderBR.getRate(),  Robot.encoders.encoderBR.getDistance()));
+//		SmartDashboard.putString("Front Left Encoder",String.format("Speed: %f Distance:%f\n", Robot.encoders.encoderFL.getRate(),  Robot.encoders.encoderFL.getDistance()));
+//		SmartDashboard.putString("Front Right Encoder.", String.format("Speed: %f Distance:%f\n", Robot.encoders.encoderFR.getRate(),  Robot.encoders.encoderFR.getDistance()));
+//		SmartDashboard.putString("Back Left Encoder.", String.format("Speed: %f Distance:%f\n", Robot.encoders.encoderBL.getRate(),  Robot.encoders.encoderBL.getDistance()));
+//		SmartDashboard.putString("Back Right Encoder.", String.format("Speed: %f Distance:%f\n", Robot.encoders.encoderBR.getRate(),  Robot.encoders.encoderBR.getDistance()));
 	}
+	
 	public void debugDrive(){
 		double[] wheelSpeeds = Robot.mDrive.getWheelSpeeds();
-			SmartDashboard.putString("Wheel Speeeds", String.format("FL: %f, FRL %f, BL: %f, BR: %f",
+			SmartDashboard.putString("Wheel Speeeds", String.format("FL: %f, FR %f, BL: %f, BR: %f",
 				wheelSpeeds[0], wheelSpeeds[1], wheelSpeeds[2], wheelSpeeds[3]));
+			
+		SmartDashboard.putString("Drive Type", Robot.mDrive.getDriveType());
 	}
+	
 	public void debugDrivePID(){
 		SmartDashboard.putNumber("Gyro Angle", Robot.mDrive.gyro.getAngle());
 		SmartDashboard.putNumber("Gyro Rate", Robot.mDrive.gyro.getRate());
@@ -50,23 +61,39 @@ public class Dashboard {
 		SmartDashboard.putNumber("Gyro Error Deg", Robot.mDrive.gyro.getAngle() - Robot.mDrive.getTargetAngle());
 		SmartDashboard.putBoolean("Gyro Calibrating", Robot.mDrive.gyro.currentlyCalibrating());
 	}
+	
 	public void debugElevatorPID(){
 		SmartDashboard.putNumber("Elevator Height", Robot.elevator.getHeight());
 		SmartDashboard.putNumber("Elevator rate", Robot.elevator.encoder.getRate());
 		SmartDashboard.putNumber("Elevator Output", Robot.elevator.elevatorPID.getOutput());
 		SmartDashboard.putNumber("Height error", Robot.elevator.getHeight() - Robot.elevator.getSetpoint());
 	}
+	
 	public void debugElevator(){
-		SmartDashboard.putNumber("Elevator preset", Robot.elevator.getPreset());
+		SmartDashboard.putNumber("Elevator preset", Robot.elevator.getPresetIndex());
 		SmartDashboard.putNumber("Elevator setpoint", Robot.elevator.elevatorPID.getSetpoint());
 		
 		SmartDashboard.putString("Elevator control", Robot.elevator.getControlState());
 		SmartDashboard.putString("Elevator Piston", Robot.elevator.getPistonState());
+		SmartDashboard.putBoolean("Elevator at top", Robot.elevator.atTop());
+		SmartDashboard.putBoolean("Elevator at bottom", Robot.elevator.atBot());
+		SmartDashboard.putBoolean("Elevator encoder calibrated", Robot.elevator.getEncoderCalibrated());
 	}
 	public void debugDropper(){
 		SmartDashboard.putString("Drop state", Robot.dropper.getState());
 	}
-	
+	public void debugAuton() {
+		SmartDashboard.putNumber("Auton State", Robot.autonRunner.getState());
+		SmartDashboard.putNumber("AutoY error", Robot.autonRunner.driverY.getError());
+		SmartDashboard.putNumber("AutoX error", Robot.autonRunner.driverX.getError());
+		SmartDashboard.putNumber("AutoSp error", Robot.autonRunner.driverSpin.getError());
+		
+		SmartDashboard.putNumber("AutoY set", Robot.autonRunner.driverY.getSetpoint());
+		SmartDashboard.putNumber("AutoX set", Robot.autonRunner.driverX.getSetpoint());
+		SmartDashboard.putNumber("AutonSp set", Robot.autonRunner.driverSpin.getSetpoint());
+		SmartDashboard.putNumber("ErrorTimer", Robot.autonRunner.errorTimer.get());
+		SmartDashboard.putNumber("WaitTimer", Robot.autonRunner.waitTimer.get());
+	}
 	
 	
 	public int getIntFix(String key, int def){

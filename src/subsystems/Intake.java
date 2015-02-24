@@ -26,32 +26,40 @@ public class Intake {
 	}
 	
 	public void run() {
-		if(Robot.operator.getRawButton(Constants.BUTTON_A)){
-			if(getPistonState().equals("Unknown"))
-				retract();
-			else if(getPistonState().equals("Extended"))
-				retract();
-			else
-				extend();
-		}
+//		if(Robot.operator.getRawButton(Constants.BUTTON_A)){
+//			if(getPistonState().equals("Unknown"))
+//				retract();
+//			else if(getPistonState().equals("Extended"))
+//				retract();
+//			else
+//				extend();
+//		}
+//		
+//		if(Robot.operator.getRawButton(Constants.BUTTON_X)){
+//			if(getPistonState(leftSol).equals("Unknown"))
+//				retract(leftSol);
+//			else if(getPistonState(leftSol).equals("Extended"))
+//				retract(leftSol);
+//			else
+//				extend(leftSol);
+//		}
+//		
+//		if(Robot.operator.getRawButton(Constants.BUTTON_B)){
+//			if(getPistonState(rightSol).equals("Unknown"))
+//				retract(rightSol);
+//			else if(getPistonState(rightSol).equals("Extended"))
+//				retract(rightSol);
+//			else
+//				extend(rightSol);
+//		}
 		
-		if(Robot.operator.getRawButton(Constants.BUTTON_X)){
-			if(getPistonState(leftSol).equals("Unknown"))
-				retract(leftSol);
-			else if(getPistonState(leftSol).equals("Extended"))
-				retract(leftSol);
-			else
-				extend(leftSol);
-		}
 		
-		if(Robot.operator.getRawButton(Constants.BUTTON_B)){
-			if(getPistonState(rightSol).equals("Unknown"))
-				retract(rightSol);
-			else if(getPistonState(rightSol).equals("Extended"))
-				retract(rightSol);
-			else
-				extend(rightSol);
-		}
+		if(Robot.operator.getRawButton(Constants.BUTTON_A))
+			this.retract();
+		if(Robot.operator.getRawButton(Constants.BUTTON_Y))
+			this.extend();
+		
+		
 		
 		
 		
@@ -63,7 +71,7 @@ public class Intake {
 		if(inputX > Constants.INTAKE_DEADZONE)
 			setSpeedManual(0.0, inputX);
 		else if(inputX < -Constants.INTAKE_DEADZONE)
-			setSpeedManual(inputX, 0.0);
+			setSpeedManual(-inputX, 0.0);
 		else
 			setSpeedManual(inputY,inputY);		
 	}
