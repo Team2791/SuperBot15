@@ -37,11 +37,7 @@ public class Robot extends IterativeRobot {
     	camera = new ShakerCamera();
     	
     	dropper = new Dropper();
-    	
-    	
-    	
-    	
-	}
+	}	
 
 	public void autonomousInit(){
 		autonRunner.reset();

@@ -236,6 +236,124 @@ public class AutonRunner {
 		case 0: default:
 		}
 	}
+	private void OneCanOneTote(){//robot has to be set at back corner of the far right tote
+		switch(state){
+		case 1:
+			Robot.intake.extend();
+			Robot.elevator.retract();
+			Robot.dropper.raise();
+			Robot.intake.setSpeedManual(1.0, 1.0);
+			waitTimer.start();
+			state++;
+			break;
+		case 2:
+			if(waitTimer.get() > 5.0)
+				waitTimer.reset();
+				state++;
+			break;
+		case 3:
+			Robot.intake.retract();
+			Robot.elevator.autonLift(1);
+			driverY.setTarget(-2.5);
+			driverX.setTarget(-2.25);
+			driverSpin.setTarget(0.0);
+			waitTimer.start();
+			state++;
+			break;
+		case 4:
+			if(atTarget(false))
+				state++;
+			break;
+		case 5:
+			driverY.setTarget(-6.5);
+			driverX.setTarget(0);
+			driverSpin.setTarget(0);
+			state++;
+			break;
+		case 6:
+			driverX.setDisabled(true);
+			driverY.setDisabled(true);
+			driverSpin.setTarget(-90.0);
+			state++;
+			break;
+		case 7:
+			if(atAngle())
+				Robot.elevator.autonLift(0);
+				state++;
+			break;
+		case 8:
+			driverSpin.setTarget(90.0);
+			state++;
+			break;
+		case 9:
+			if(atAngle())
+				state++;
+			break;
+		case 10:
+			driverX.setDisabled(false);
+			driverY.setDisabled(false);
+			driverX.setTarget(0);
+			driverY.setTarget(9);
+			driverSpin.setTarget(0);
+		case 11:
+			if(atTarget(false))
+				state++;
+			break;
+		case 12:
+			Robot.intake.extend();
+			Robot.intake.setSpeedManual(1.0, 1.0);
+			waitTimer.start();
+			state++;
+			break;
+		case 13:
+			if(waitTimer.get() > 5.0)
+				waitTimer.reset();
+				state++;
+			break;
+		case 14:
+			Robot.intake.setSpeedManual(0.3, 0.3);
+			driverX.setTarget(0);
+			driverY.setTarget(-8.5);
+			driverSpin.setTarget(0);
+			state++;
+			break;
+		case 15:
+			if(atTarget(false))
+				Robot.intake.retract();
+			break;
+		case 0: default:
+			stop();
+		}
+		
+	}
+	private void OneCan(){//intake is set up touching the can either straight on or at an angle
+		switch(state){
+		case 1:
+			Robot.intake.extend();
+			Robot.intake.setSpeedManual(1.0, 1.0);
+			waitTimer.start();
+			state++;
+			break;
+		case 2:
+			if(waitTimer.get() > 5.0)
+				waitTimer.reset();
+				state++;
+			break;
+		case 3:
+			Robot.intake.setSpeedManual(0.3, 0.3);//can be adjusted based on the ability of intake to hold the can
+			driverX.setTarget(0);
+			driverY.setTarget(-8.5);
+			driverSpin.setTarget(0);
+			state++;
+			break;
+		case 4:
+			if(atTarget(false))
+				Robot.intake.retract();
+			break;
+		case 0: default:
+			stop();	
+		}
+	}
 	
 	
 	private void brokenAuton(){

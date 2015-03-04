@@ -1,7 +1,22 @@
-to do
-	adjust all pid stuff - 70%
-	
+to do	
 	dashboard competition mode
 		multiple dash files....
+		
+	test toggle stuff
 	
-	change controls
+	simulate autons
+		chris: 1 can / 1 tote + 1 can
+		justin: 1 tote / 2 cans
+		
+	
+		
+		
+auton:
+1 can
+1 tote
+2 cans
+1 tote + 1 can
+
+^^ bring to auto zone
+
+stack auto
