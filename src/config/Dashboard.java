@@ -18,7 +18,6 @@ public class Dashboard {
 		debugEncoders();
 		debugDrive();
 		debugDrivePID();
-		debugElevatorPID();
 		debugElevator();
 		debugDropper();
 		debugAuton();
@@ -62,26 +61,23 @@ public class Dashboard {
 		SmartDashboard.putBoolean("Gyro Calibrating", Robot.mDrive.gyro.currentlyCalibrating());
 	}
 	
-	public void debugElevatorPID(){
-		SmartDashboard.putNumber("Elevator Height", Robot.elevator.getHeight());
-		SmartDashboard.putNumber("Elevator rate", Robot.elevator.encoder.getRate());
-		SmartDashboard.putNumber("Elevator Output", Robot.elevator.elevatorPID.getOutput());
-		SmartDashboard.putNumber("Height error", Robot.elevator.getHeight() - Robot.elevator.getSetpoint());
-	}
-	
 	public void debugElevator(){
+		SmartDashboard.putNumber("Elevator Height", Robot.elevator.getHeight());
 		SmartDashboard.putNumber("Elevator preset", Robot.elevator.getPresetIndex());
-		SmartDashboard.putNumber("Elevator setpoint", Robot.elevator.elevatorPID.getSetpoint());
+		SmartDashboard.putNumber("Elevator setpoint", Robot.elevator.getPresetIndex());
 		
 		SmartDashboard.putString("Elevator control", Robot.elevator.getControlState());
 		SmartDashboard.putString("Elevator Piston", Robot.elevator.getPistonState());
 		SmartDashboard.putBoolean("Elevator at top", Robot.elevator.atTop());
 		SmartDashboard.putBoolean("Elevator at bottom", Robot.elevator.atBot());
 		SmartDashboard.putBoolean("Elevator encoder calibrated", Robot.elevator.getEncoderCalibrated());
+		//TODO put get elevator output here
 	}
+	
 	public void debugDropper(){
 		SmartDashboard.putString("Drop state", Robot.dropper.getState());
 	}
+	
 	public void debugAuton() {
 		SmartDashboard.putNumber("Auton State", Robot.autonRunner.getState());
 		SmartDashboard.putNumber("AutoY error", Robot.autonRunner.driverY.getError());

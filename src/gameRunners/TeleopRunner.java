@@ -1,25 +1,27 @@
 package gameRunners;
 import org.usfirst.frc.team2791.robot.*;
 
+import subsystems.Elevator;
 import config.Constants;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 public class TeleopRunner {
-	public TeleopRunner(){
-		
-	}
+	// refrences to the subsystems for easier access
+	Elevator elevator = Robot.elevator;;
 	
-	public void init(){
-		//Robot.encoders.resetAll();
-		Robot.elevator.init();
-	}
+	// elevator control related variables
+	private boolean triggeredInc  = false;
+	private boolean triggeredDec  = false;
+	private boolean triggeredSwap = false;
+	private boolean manualControl = true;
 	
 	public void run(){
 		Robot.mDrive.run();
 //		Robot.mDrive.plainDrive();
 		Robot.dash.debug();
 		Robot.intake.run();
-		Robot.elevator.run();
-		//Robot.elevator.testRun();
+		elevatorTeleop();
+		
 		Robot.compressor.start();
 		Robot.dropper.run();
 		
@@ -29,5 +31,33 @@ public class TeleopRunner {
 		if(Robot.driver.getRawButton(Constants.BUTTON_LB)){
 			Robot.encoders.resetAll();
 		}	
+	}
+	
+	private void elevatorTeleop() {
+		// --------- manual increase --------- //
+		if(Robot.operator.getRawButton(Constants.BUTTON_RB)){
+			triggeredInc = true;
+		}
+		if(triggeredInc && !Robot.operator.getRawButton(Constants.BUTTON_RB)){
+			elevator.increasePreset();
+			triggeredInc = false;
+		}
+		
+		// --------- manual decrease --------- //
+		if(Robot.operator.getRawButton(Constants.BUTTON_LB)){
+			triggeredDec = true;
+		}
+		if(triggeredDec && !Robot.operator.getRawButton(Constants.BUTTON_LB)){
+			elevator.decreasePreset();
+			triggeredDec = false;
+		}
+		
+		// drop to bottom button
+		if(Robot.operator.getRawButton(Constants.BUTTON_LS)){
+			elevator.goToPreset(0);
+		}
+		
+		// carry out the instructions given
+		elevator.run();
 	}
 }

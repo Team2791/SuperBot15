@@ -50,7 +50,6 @@ public class Robot extends IterativeRobot {
     	autonRunner.runPeriodic();
     }
 
-    public void teleopInit()    { teleopRunner.init();}
     public void teleopPeriodic(){
     	teleopRunner.run();
     }
@@ -58,18 +57,16 @@ public class Robot extends IterativeRobot {
     public void testPeriodic(){}
     
     public void disabledInit() {
-    	//teleopRunner.init();
-    	elevator.disable();
     	autonRunner.reset();
     }
     public void disabledPeriodic(){
     	compressor.stop();
     	mDrive.disable();
-    	elevator.disabledPeriodic();
+    	elevator.disable();
     	
     	if(operator.getRawButton(Constants.BUTTON_SEL) || driver.getRawButton(Constants.BUTTON_SEL)){
     		mDrive.gyro.recalibrate();
-    		elevator.encoder.reset();
+    		elevator.resetEncoder();
     		encoders.encoderX.reset();
     		encoders.encoderY.reset();
     	}
