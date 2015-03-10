@@ -1,7 +1,5 @@
 package subsystems;
 
-import org.usfirst.frc.team2791.robot.Robot;
-
 import config.*;
 import edu.wpi.first.wpilibj.CounterBase;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -9,7 +7,6 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Talon;
-import edu.wpi.first.wpilibj.Timer;
 
 public class Elevator{
 	// components 
@@ -20,7 +17,7 @@ public class Elevator{
 	private static DoubleSolenoid piston;
 	
 	// state variables 
-	private boolean manualControl = true;
+	public boolean manualControl = true;
 	private boolean encoderCalibrated = false;
 	private boolean holdingTote       = false;
 	private double  targetHeight       = 0;
@@ -89,8 +86,8 @@ public class Elevator{
 		lift.set(output);
 	}
 
-	private void extendTotePistion(){ piston.set(Value.kForward); }
-	private void retractTotePiston(){ piston.set(Value.kReverse); }
+	private void extend(){ piston.set(Value.kForward); }
+	private void retract(){ piston.set(Value.kReverse); }
 	
 	public void run() {
 		checkEncoderCalibration();
@@ -107,7 +104,7 @@ public class Elevator{
 					setOutput(0.7);
 				} else {
 					// the height difference is small which means we're closing in on the hooks
-					extendTotePistion();
+					extend();
 					setOutput(0.23);
 					// record this tote height so the drop code knows how long to go slow
 					dropingToteHeight = targetHeight;
@@ -121,7 +118,7 @@ public class Elevator{
 					if(holdingHeightDiff < -Constants.ELEVATOR_SPEED_THRESHOLD) {
 						// the height difference is large, the tote is dropped off
 						holdingTote = false;
-						retractTotePiston();
+						retract();
 						setOutput(-0.5);
 					} else {
 						// we're still letting the tote down gently
