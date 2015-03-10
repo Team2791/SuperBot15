@@ -28,6 +28,12 @@ public class Elevator{
 	private double	dropingToteHeight  = 0;
 	private int 	dropingTotePresetIndex  = 0;
 	private double  output = 0;
+	
+	// auto lift related varaibles
+	private boolean autoLift = false;
+	private boolean toteReadyToPickup = false;
+	private Timer liftAtTargetTimer = new Timer();
+	private int botToteIndex = -1, stackHeight = 3;
 		
 	public Elevator(){
 		lift = new Talon(Electronics.ELEVATOR_TALON);
@@ -40,7 +46,8 @@ public class Elevator{
 		encoder.stopLiveWindowMode();
 		
 		piston = new DoubleSolenoid(Electronics.ELEVATOR_PISTON_FOR, Electronics.ELEVATOR_PISTON_REV);
-
+		
+		liftAtTargetTimer.reset();
 	}
 	
 	// public get methods
@@ -49,6 +56,9 @@ public class Elevator{
 	public double getPresetValue(int index)  { return Constants.ELEVATOR_PRESETS[index]; }
 	public double getTargetHeight()	{ return targetHeight; }
 	public double getOutput() { return output; }
+	public boolean atTarget() { 
+		return Math.abs(getHeight() - getTargetHeight()) < Constants.ELEVATOR_AT_TARGET_ERROR_THRESHOLD;
+	}
 	
 	// public set methods
 	/**
@@ -82,6 +92,13 @@ public class Elevator{
 		targetHeight = getPresetValue(index);
 	}
 	
+	public void setAutoLift(boolean enabled) { 
+		if(enabled) {
+			manualControl = false;
+		}
+		autoLift = enabled;
+	}
+	
 	// private set methods
 	private void setOutput(double output) {
 		// TODO: check that it's okay to set the output + or -
@@ -98,46 +115,56 @@ public class Elevator{
 			// based on where we are and what we want figure out what to do
 			// check if need to go up or down
 			double heightDiff = targetHeight - getHeight();
-			if(heightDiff > 0) {
-				// we need to go up
-				// check if we should be going up fast or slow
-				// we want fast if we're far from the target slow if we're close
-				if(heightDiff > Constants.ELEVATOR_SPEED_THRESHOLD) {
-					// the height difference is large, we want to get there fast
-					setOutput(0.7);
-				} else {
-					// the height difference is small which means we're closing in on the hooks
-					extendTotePistion();
-					setOutput(0.23);
-					// record this tote height so the drop code knows how long to go slow
-					dropingToteHeight = targetHeight;
-					dropingTotePresetIndex = currentPresetIndex;
-				}
+			
+			if(Math.abs(heightDiff) < Constants.ELEVATOR_AT_TARGET_ERROR_THRESHOLD) {
+				// if we're close we don't want to move so just hold position 
+				// TODO: change this to a P controller with feedforwrad
+				setOutput(0.08);
+				liftAtTargetTimer.start();
 			} else {
-				// need to go down
-				// if dropping off tote check if still close to hooks
-				if(holdingTote) {
-					double holdingHeightDiff = dropingToteHeight - getHeight();
-					if(holdingHeightDiff < -Constants.ELEVATOR_SPEED_THRESHOLD) {
-						// the height difference is large, the tote is dropped off
-						holdingTote = false;
-						retractTotePiston();
-						setOutput(-0.5);
-					} else {
-						// we're still letting the tote down gently
-						setOutput(-.15);
-					}
-					
-				} else {
-					if(heightDiff < -Constants.ELEVATOR_SPEED_THRESHOLD) {
+				// reset the timer that counts
+				liftAtTargetTimer.reset();
+				if(heightDiff > 0) {
+					// we need to go up
+					// check if we should be going up fast or slow
+					// we want fast if we're far from the target slow if we're close
+					if(heightDiff > Constants.ELEVATOR_SPEED_THRESHOLD) {
 						// the height difference is large, we want to get there fast
-						setOutput(-0.5);
+						setOutput(0.7);
 					} else {
-						// the height difference is small which means we're closing in on the target
-						setOutput(-.15);
+						// the height difference is small which means we're closing in on the hooks
+						extendTotePistion();
+						setOutput(0.23);
+						// record this tote height so the drop code knows how long to go slow
+						dropingToteHeight = targetHeight;
+						dropingTotePresetIndex = currentPresetIndex;
 					}
-				}	
-			}
+				} else {
+					// need to go down
+					// if dropping off tote check if still close to hooks
+					if(holdingTote) {
+						double holdingHeightDiff = dropingToteHeight - getHeight();
+						if(holdingHeightDiff < -Constants.ELEVATOR_SPEED_THRESHOLD) {
+							// the height difference is large, the tote is dropped off
+							holdingTote = false;
+							retractTotePiston();
+							setOutput(-0.5);
+						} else {
+							// we're still letting the tote down gently
+							setOutput(-.10);
+						}
+						
+					} else {
+						if(heightDiff < -Constants.ELEVATOR_SPEED_THRESHOLD) {
+							// the height difference is large, we want to get there fast
+							setOutput(-0.5);
+						} else {
+							// the height difference is small which means we're closing in on the target
+							setOutput(-.10);
+						}
+					}	
+				}
+			}	
 		}
 	}
 	
@@ -145,6 +172,47 @@ public class Elevator{
 		// check for someone manually pushing the elevator down
 		checkEncoderCalibration();
 		lift.set(0.0);
+	}
+	
+	public boolean getToteReadyToPickup() {
+		// if we add limit switches this will return more than a varaible
+		return toteReadyToPickup;
+	}
+	
+	public void setToteReadyToPickup(boolean value) {
+		// this is to set the varaible tote at bottom 
+		toteReadyToPickup = value;
+	}
+	
+	public void runAutoLift() {
+		if(autoLift) {
+			// check if the tote is at the bottom
+			if(getToteReadyToPickup() && atBot()) {
+				// chose the preset to send it to and record it
+				// if there are no totes on the elevator
+				if(botToteIndex == -1) {
+					int target = stackHeight;
+					goToPreset(target);
+					botToteIndex = target;
+					
+				} else {
+					// deincrememnt botToteIndex then tell goToPreset to go there
+					goToPreset(--botToteIndex);
+				}
+				// reset tote ready to pickup. Take this out when we have sensors
+				setToteReadyToPickup(false);
+				// reset the tote 
+				
+				// don't bother checking other if statments
+				return;
+			} // end if(getToteReadyToPickup() && atBot()) {
+			
+			// check if the tote is at the top and we should start counting
+			if(atTarget() && liftAtTargetTimer.get() > Constants.ELEVATOR_AUTO_LIFT_SETTLE_TIME) {
+				// tell the elevator to back to the bottom
+				goToPreset(0);
+			} 
+		}
 	}
 	
 	/**
@@ -157,6 +225,12 @@ public class Elevator{
 		dropingToteHeight  = 0;
 		dropingTotePresetIndex  = 0;
 		manualControl = true;
+		
+		// reset auto lift
+		autoLift = false;
+		toteReadyToPickup = false;
+		botToteIndex = -1;
+		stackHeight = 3;
 	}
 	
 	public void resetEncoder()  { encoder.reset(); }
@@ -167,6 +241,7 @@ public class Elevator{
 			encoderCalibrated = true;
 		}
 	}
+	
 	
 	public boolean atTop() {
 		if(encoderCalibrated) {
