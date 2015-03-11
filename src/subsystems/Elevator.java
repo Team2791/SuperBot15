@@ -86,8 +86,8 @@ public class Elevator{
 		lift.set(output);
 	}
 
-	private void extend(){ piston.set(Value.kForward); }
-	private void retract(){ piston.set(Value.kReverse); }
+	public void extend(){ piston.set(Value.kForward); }
+	public void retract(){ piston.set(Value.kReverse); }
 	
 	public void run() {
 		checkEncoderCalibration();

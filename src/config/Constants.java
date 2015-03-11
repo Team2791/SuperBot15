@@ -7,6 +7,7 @@ public class Constants {
 	public static final double AUTON_DRIVE_Y_PID_OUTPUT     		= 0.4;
 	public static final double AUTON_DRIVE_ERROR_THRESHOLD			= 0.2;
 	public static final double AUTON_ANGLE_ERROR_THRESHOLD			= 5.0;
+	public static final double AUTON_ANGLE_START_POINT              = 45.0;
 	
 	// --------- drive pid --------- //
 	
