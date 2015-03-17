@@ -58,9 +58,6 @@ public class AutonRunner {
 	
 	public void runInit(){
 		broken= false;
-//		driverX.driveDistance(-12.0 * 12.0); // 12 ft left
-//		driverY.driveDistance(10.0 * 12.0); // 10 ft forward
-				// check signs
 		Robot.mDrive.gyro.reset();
 		driverSpin.setTarget(0.0); // 0 degrees is what we want to be angled at
 		driverX.setTarget(0.0);
@@ -78,7 +75,7 @@ public class AutonRunner {
 		// first do logic		
 		
 		Robot.dash.debug();
-		switch(Robot.dash.getIntFix("Auton.Strat", 1)){
+		/*switch(Robot.dash.getIntFix("Auton.Strat", 1)){
 		case 1:
 			driveDiamond();
 			break;
@@ -88,7 +85,9 @@ public class AutonRunner {
 		case 3:
 			brokenAuton();
 			break;
-		}
+		}*/
+		
+		OneTote();
 		
 		
 		// make robot do what logic says
@@ -170,7 +169,7 @@ public class AutonRunner {
 			state++;
 			break;
 		case 2:
-			if(waitTimer.get() > 5.0){
+			if(waitTimer.get() > 3.0){
 				waitTimer.reset();
 				waitTimer.stop();
 				state++;
@@ -219,9 +218,11 @@ public class AutonRunner {
 			state++;
 			break;
 		case 2:
-			if(waitTimer.get() > 5.0)
+			if(waitTimer.get() > 3.0){
 				waitTimer.reset();
+				waitTimer.stop();
 				state++;
+			}
 			break;
 		case 3:
 			Robot.intake.retract();
@@ -231,32 +232,34 @@ public class AutonRunner {
 			state++;
 			break;
 		case 4:
-			if(waitTimer.get() > 3.0){
-			Robot.elevator.goToPreset(0);
+			if(waitTimer.get() > 2.5){
+				Robot.elevator.goToPreset(0);
 				waitTimer.reset();
-				state++;}
+				waitTimer.stop();
+				state++;
+			}
 			break;
-		
 		case 5:
-			driverY.setTarget(4.77);
-			driverX.setTarget(-4.77);
+			XY = ShakerDrive.rotate(5, 0, angle);
+			driverY.setTarget(XY[1]);
+			driverX.setTarget(XY[0]);
 			driverSpin.setTarget(0);
 			state++;
 			break;
 		case 6:
-		if(atTarget(false)){
-			driverY.setTarget(1);
-			driverX.setTarget(0);
-			driverSpin.setTarget(0);
-		state++;
-			
-		}break;
+			if(atTarget(false)){
+				XY = ShakerDrive.rotate(0, 1, angle);
+				driverY.setTarget(XY[1]);
+				driverX.setTarget(XY[0]);
+				driverSpin.setTarget(0);
+				state++;
+			}
+			break;
 		case 7:
-		if(atTarget(false)){
-			
-		state++;
-			
-		}break;
+			if(atTarget(false)){
+				state++;
+			}
+			break;
 		case 8:
 			Robot.intake.extend();
 			Robot.elevator.retract();
@@ -265,9 +268,11 @@ public class AutonRunner {
 			state++;
 			break;
 		case 9:
-			if(waitTimer.get() > 5.0){
+			if(waitTimer.get() > 3.0){
 				waitTimer.reset();
-				state++;}
+				waitTimer.stop();
+				state++;
+			}
 			break;
 		case 10:
 			Robot.intake.retract();
@@ -277,32 +282,25 @@ public class AutonRunner {
 			state++;
 			break;
 		case 11:
-			if(waitTimer.get() > 5.0){
+			if(waitTimer.get() > 2.0){
 				waitTimer.reset();
-				driverY.setTarget(-6);
-			driverX.setTarget(0);
-			driverSpin.setTarget(0);
-				
-				state++;}
+				waitTimer.stop();
+				XY = ShakerDrive.rotate(0, -9.5, angle);
+				driverY.setTarget(XY[1]);
+				driverX.setTarget(XY[0]);
+				driverSpin.setTarget(0);
+				state++;
+			}
 			break;
 		case 12:
 			if(atTarget(false)){
-		
-			state++;	
+				state++;	
 			}
 			break;
 		case 13:
 			Robot.dropper.drop();
-			driverY.setTarget(-1);
-			driverX.setTarget(0);
-			driverSpin.setTarget(0);
-		case 14:
-			if(atTarget(false)){	
-			}
+			state++;
 			break;
-				
-	
-		
 		case 0: default:
 			stop();
 		}
@@ -318,9 +316,11 @@ public class AutonRunner {
 			state++;
 			break;
 		case 2:
-			if(waitTimer.get() > 5.0)
+			if(waitTimer.get() > 3.0){
 				waitTimer.reset();
+				waitTimer.stop();
 				state++;
+			}
 			break;
 		case 3:
 			Robot.intake.retract();
@@ -330,32 +330,34 @@ public class AutonRunner {
 			state++;
 			break;
 		case 4:
-			if(waitTimer.get() > 3.0){
-			Robot.elevator.goToPreset(0);
+			if(waitTimer.get() > 2.75){
+				Robot.elevator.goToPreset(0);
 				waitTimer.reset();
-				state++;}
+				waitTimer.stop();
+				state++;
+			}
 			break;
-		
 		case 5:
-			driverY.setTarget(4.77);
-			driverX.setTarget(-4.77);
+			XY = ShakerDrive.rotate(5, 0, angle);
+			driverY.setTarget(XY[1]);
+			driverX.setTarget(XY[0]);
 			driverSpin.setTarget(0);
 			state++;
 			break;
 		case 6:
-		if(atTarget(false)){
-			driverY.setTarget(1);
-			driverX.setTarget(0);
-			driverSpin.setTarget(0);
-		state++;
-			
-		}break;
+			if(atTarget(false)){
+				XY = ShakerDrive.rotate(0, 1, angle);
+				driverY.setTarget(XY[1]);
+				driverX.setTarget(XY[0]);
+				driverSpin.setTarget(0);
+				state++;
+			}
+			break;
 		case 7:
-		if(atTarget(false)){
-			
-		state++;
-			
-		}break;
+			if(atTarget(false)){
+				state++;
+			}
+			break;
 		case 8:
 			Robot.intake.extend();
 			Robot.elevator.retract();
@@ -364,9 +366,11 @@ public class AutonRunner {
 			state++;
 			break;
 		case 9:
-			if(waitTimer.get() > 5.0){
+			if(waitTimer.get() > 3.0){
 				waitTimer.reset();
-				state++;}
+				waitTimer.stop();
+				state++;
+			}
 			break;
 		case 10:
 			Robot.intake.retract();
@@ -376,30 +380,33 @@ public class AutonRunner {
 			state++;
 			break;
 		case 11:
-			if(waitTimer.get() > 5.0){
+			if(waitTimer.get() > 2.5){
 				waitTimer.reset();
-				state++;}
+				waitTimer.stop();
+				state++;
+			}
 			break;
 		case 12:
-			driverY.setTarget(4.77);
-			driverX.setTarget(-4.77);
+			XY = ShakerDrive.rotate(5, 0, angle);
+			driverY.setTarget(XY[1]);
+			driverX.setTarget(XY[0]);
 			driverSpin.setTarget(0);
 			state++;
 			break;
 		case 13:
-		if(atTarget(false)){
-			driverY.setTarget(1);
-			driverX.setTarget(0);
-			driverSpin.setTarget(0);
-			state++;
-		}
-		break;
+			if(atTarget(false)){
+				XY = ShakerDrive.rotate(0, 1, angle);
+				driverY.setTarget(XY[1]);
+				driverX.setTarget(XY[0]);
+				driverSpin.setTarget(0);
+				state++;
+			}
+			break;
 		case 14:
-		if(atTarget(false)){
-			
-		state++;
-			
-		}break;
+			if(atTarget(false)){
+				state++;
+			}
+			break;
 		case 15:
 			Robot.intake.extend();
 			Robot.elevator.retract();
@@ -408,25 +415,29 @@ public class AutonRunner {
 			state++;
 			break;
 		case 16:
-			if(waitTimer.get() > 5.0){
+			if(waitTimer.get() > 3.0){
 				waitTimer.reset();
-				state++;}
+				waitTimer.stop();
+				state++;
+			}
 			break;
 		case 17:
 			Robot.intake.retract();
-			Robot.elevator.goToPreset(2);
+			Robot.elevator.goToPreset(1);
 			driverSpin.setTarget(0.0);
 			waitTimer.start();
 			state++;
 			break;
 		case 18:
-			if(waitTimer.get() > 5.0){
+			if(waitTimer.get() > 2.0){
 				waitTimer.reset();
-				driverY.setTarget(-6);
-			driverX.setTarget(0);
-			driverSpin.setTarget(0);
-				
-				state++;}
+				waitTimer.stop();
+				XY = ShakerDrive.rotate(0, -9.5, angle);
+				driverY.setTarget(XY[1]);
+				driverX.setTarget(XY[0]);
+				driverSpin.setTarget(0);
+				state++;
+			}
 			break;
 		case 19:
 			if(atTarget(false)){
@@ -435,18 +446,15 @@ public class AutonRunner {
 			break;
 		case 20:
 			Robot.dropper.drop();
-			driverY.setTarget(-1);
-			driverX.setTarget(0);
-			driverSpin.setTarget(0);
-		case 21:
-			if(atTarget(false)){	
-			}
+			state++;
 			break;
 		case 0: default:
 			stop();
 		}
 	}
-		
+	
+	
+	// not an option
 	private void OneCanOneTote(){//robot has to be set at back corner of the far right tote *human player staion*/= = x\*human player staion*
 		switch(state){
 		case 1:
@@ -545,20 +553,24 @@ public class AutonRunner {
 			state++;
 			break;
 		case 2:
-			if(waitTimer.get() > 5.0){
+			if(waitTimer.get() > 2.5){
 				waitTimer.reset();
-				state++;}
+				state++;
+			}
 			break;
 		case 3:
 			Robot.intake.setSpeedManual(0.3, 0.3);//can be adjusted based on the ability of intake to hold the can
-			driverX.setTarget(0);
-			driverY.setTarget(-8.5);
+			XY = ShakerDrive.rotate(0, -9.5, angle);
+			driverY.setTarget(XY[1]);
+			driverX.setTarget(XY[0]);
 			driverSpin.setTarget(0);
 			state++;
 			break;
 		case 4:
-			if(atTarget(false))
+			if(atTarget(false)){
 				Robot.intake.retract();
+				state++;
+			}
 			break;
 		case 0: default:
 			stop();	
