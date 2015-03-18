@@ -1,5 +1,7 @@
 package subsystems;
 
+import org.usfirst.frc.team2791.robot.Robot;
+
 import config.*;
 import edu.wpi.first.wpilibj.CounterBase;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -17,7 +19,7 @@ public class Elevator{
 	private static DoubleSolenoid piston;
 	
 	// state variables 
-	public boolean manualControl = true;
+	public boolean manualControl = false;
 	private boolean encoderCalibrated = false;
 	private boolean holdingTote       = false;
 	private double  targetHeight       = 0;
@@ -135,6 +137,10 @@ public class Elevator{
 					}
 				}	
 			}
+		}
+		else{
+			targetHeight = getHeight();
+			setOutput(Robot.operator.getAxis(Constants.AXIS_LS_Y));
 		}
 	}
 	

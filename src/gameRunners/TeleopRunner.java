@@ -58,10 +58,10 @@ public class TeleopRunner {
 		}
 
 		if(Robot.operator.getPOV(0) == Constants.POV_LEFT)
-			elevator.manualControl = false;
+			elevator.manualControl = true;
 		
 		if(Robot.operator.getPOV(0) == Constants.POV_RIGHT)
-			elevator.manualControl = true;
+			elevator.manualControl = false;
 		
 		// carry out the instructions given
 		elevator.run();
