@@ -20,6 +20,8 @@ public class Robot extends IterativeRobot {
 	public static Dropper dropper;
 	public static ShakerCamera camera;
 	
+	public double angleChange = 0.0;
+	
 	public void robotInit() {
 		driver   = new ShakerJoystick(0);
 		operator = new ShakerJoystick(1);

@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Talon;
-import edu.wpi.first.wpilibj.Timer;
 
 public class Elevator{
 	// components 
@@ -20,7 +19,7 @@ public class Elevator{
 	private static DoubleSolenoid piston;
 	
 	// state variables 
-	private boolean manualControl = true;
+	public boolean manualControl = false;
 	private boolean encoderCalibrated = false;
 	private boolean holdingTote       = false;
 	private double  targetHeight       = 0;
@@ -106,8 +105,8 @@ public class Elevator{
 		lift.set(output);
 	}
 
-	private void extendTotePistion(){ piston.set(Value.kForward); }
-	private void retractTotePiston(){ piston.set(Value.kReverse); }
+	public void extend(){ piston.set(Value.kForward); }
+	public void retract(){ piston.set(Value.kReverse); }
 	
 	public void run() {
 		checkEncoderCalibration();
@@ -116,21 +115,31 @@ public class Elevator{
 			// check if need to go up or down
 			double heightDiff = targetHeight - getHeight();
 			
-			if(Math.abs(heightDiff) < Constants.ELEVATOR_AT_TARGET_ERROR_THRESHOLD) {
-				// if we're close we don't want to move so just hold position 
-				// TODO: change this to a P controller with feedforwrad
-				setOutput(0.08);
-				liftAtTargetTimer.start();
+			if(heightDiff > 0) {
+				// we need to go up
+				// check if we should be going up fast or slow
+				// we want fast if we're far from the target slow if we're close
+				if(heightDiff > Constants.ELEVATOR_SPEED_THRESHOLD) {
+					// the height difference is large, we want to get there fast
+					setOutput(0.7);
+				} else {
+					// the height difference is small which means we're closing in on the hooks
+					extend();
+					setOutput(0.23);
+					// record this tote height so the drop code knows how long to go slow
+					dropingToteHeight = targetHeight;
+					dropingTotePresetIndex = currentPresetIndex;
+				}
 			} else {
-				// reset the timer that counts
-				liftAtTargetTimer.reset();
-				if(heightDiff > 0) {
-					// we need to go up
-					// check if we should be going up fast or slow
-					// we want fast if we're far from the target slow if we're close
-					if(heightDiff > Constants.ELEVATOR_SPEED_THRESHOLD) {
-						// the height difference is large, we want to get there fast
-						setOutput(0.7);
+				// need to go down
+				// if dropping off tote check if still close to hooks
+				if(holdingTote) {
+					double holdingHeightDiff = dropingToteHeight - getHeight();
+					if(holdingHeightDiff < -Constants.ELEVATOR_SPEED_THRESHOLD) {
+						// the height difference is large, the tote is dropped off
+						holdingTote = false;
+						retract();
+						setOutput(-0.5);
 					} else {
 						// the height difference is small which means we're closing in on the hooks
 						extendTotePistion();
@@ -165,6 +174,10 @@ public class Elevator{
 					}	
 				}
 			}	
+		}
+		else{
+			targetHeight = getHeight();
+			setOutput(Robot.operator.getAxis(Constants.AXIS_LS_Y));
 		}
 	}
 	

@@ -31,6 +31,7 @@ public class ShakerGyro extends SensorBase implements Runnable {
 	private static final int updateDelayMs = 1000 / 100; // run at 100 Hz
 	
 	private boolean calibrated = false;
+	public double initialAngle = 0.0;
 	
 	public ShakerGyro(SPI.Port port) throws InterruptedException {
 		m_spi = new SPI(port);
@@ -90,7 +91,7 @@ public class ShakerGyro extends SensorBase implements Runnable {
 		last_update_time = fpgaTime;
 	}
 	
-	public double getAngle() {
+	public double getAngle(){
 		return angle - angleOffset;
 	}
 	

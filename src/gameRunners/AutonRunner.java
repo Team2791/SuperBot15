@@ -2,6 +2,7 @@ package gameRunners;
 
 import org.usfirst.frc.team2791.robot.Robot;
 
+import overriddenClasses.ShakerDrive;
 import config.Constants;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -15,6 +16,8 @@ public class AutonRunner {
 	public Timer errorTimer, waitTimer;
 	private int nextHook = 2;
 	private boolean broken = false;
+	private double angle = Constants.AUTON_ANGLE_START_POINT;
+	private double[] XY;
 	
 	public AutonRunner(){
 		autonX_P = Robot.dash.getDoubleFix("autonX_P", 0.70);
@@ -55,9 +58,6 @@ public class AutonRunner {
 	
 	public void runInit(){
 		broken= false;
-//		driverX.driveDistance(-12.0 * 12.0); // 12 ft left
-//		driverY.driveDistance(10.0 * 12.0); // 10 ft forward
-				// check signs
 		Robot.mDrive.gyro.reset();
 		driverSpin.setTarget(0.0); // 0 degrees is what we want to be angled at
 		driverX.setTarget(0.0);
@@ -75,17 +75,19 @@ public class AutonRunner {
 		// first do logic		
 		
 		Robot.dash.debug();
-		switch(Robot.dash.getIntFix("Auton.Strat", 1)){
+		/*switch(Robot.dash.getIntFix("Auton.Strat", 1)){
 		case 1:
 			driveDiamond();
 			break;
 		case 2:
-			pickUpOneTote();
+			//pickUpOneTote();
 			break;
 		case 3:
 			brokenAuton();
 			break;
-		}
+		}*/
+		
+		OneTote();
 		
 		
 		// make robot do what logic says
@@ -100,7 +102,7 @@ public class AutonRunner {
 		
 	}
 	
-	// autonomus modes
+	// autonomous modes
 	private void driveDiamond() {
 		// first drive 3' forward
 		switch(state) {
@@ -156,87 +158,304 @@ public class AutonRunner {
 		}
 	}
 	
-	private void pickUpOneTote(){
+	private void OneTote(){//robot has to be set at back corner of the far right tote *human player station*\ x = = /*human player station*
 		switch(state){
 		case 1:
 			Robot.intake.extend();
-			Robot.dropper.raise();
 			Robot.elevator.retract();
-			state++;
-			break;
-		case 2:
+			Robot.dropper.raise();
 			Robot.intake.setSpeedManual(1.0, 1.0);
-			driverX.setTarget(0.0);
-			driverY.setTarget(0.0);
-			driverSpin.setTarget(0);
 			waitTimer.start();
 			state++;
 			break;
-		case 3:
-			if(waitTimer.get() > 5.0){
+		case 2:
+			if(waitTimer.get() > 3.0){
+				waitTimer.reset();
+				waitTimer.stop();
 				state++;
 			}
 			break;
-		case 4:
-			driverX.setDisabled(true);
-			driverY.setDisabled(true);
-			driverSpin.setTarget(-90.0);
+		case 3:
+			Robot.intake.retract();
+			Robot.elevator.goToPreset(1);
+			driverSpin.setTarget(0.0);
+			waitTimer.start();
 			state++;
+			break;
+		case 4:
+			if(waitTimer.get() > 3.0){
+				waitTimer.reset();
+				state++;
+			}
 			break;
 		case 5:
-			if(atAngle())
-				state++;
-			break;
-		case 6:
-			driverX.setDisabled(false);
-			driverY.setDisabled(false);
-			driverX.setTarget(0);
-			driverY.setTarget(3.0);
+			XY = ShakerDrive.rotate(0, -9.5, angle);
+			driverY.setTarget(XY[1]);
+			driverX.setTarget(XY[0]);
+			driverSpin.setTarget(0);
 			state++;
 			break;
-		case 7:
+		case 6:
 			if(atTarget(false))
 				state++;
 			break;
-
-//		case 4:
-//			Robot.elevator.autonLift(2);
-//			Robot.intake.setSpeedManual(0.0, 0.0);
-//			state++;
-//			break;
-//		case 5:
-//			if(waitTimer.get() > 8.0){
-//				Robot.elevator.autonLift(0);
-//				state++;
-//			}
-//			break;
-//		case 6:
-//			if(!Robot.elevator.autonPistonExtended()){
-//				state++;
-//			}
-//			break;
-//		case 7:
-//			driverX.setDisabled(true);
-//			driverY.setDisabled(true);
-//			driverSpin.setTarget(90.0);
-//			if(atAngle())
-//				state++;
-//			break;
-//		case 8:
-//			Robot.mDrive.gyro.reset();
-//			driverX.setDisabled(false);
-//			driverY.setDisabled(false);
-//			if(atTarget(true))
-//				state++;
-//			break;
-//		case 9:
-//			driverY.setTarget(5.0);
-//			state++;
-//			break;
+		case 7:
+			if(atAngle())
+				Robot.elevator.goToPreset(0);
+			break;
 		case 0: default:
+			stop();
 		}
 	}
-	private void OneCanOneTote(){//robot has to be set at back corner of the far right tote
+	private void TwoTote(){//robot has to be set at back corner of the middle tote *human player staion*/= x =\*human player staion*
+		switch(state){
+		case 1:
+			Robot.intake.extend();
+			Robot.elevator.retract();
+			Robot.dropper.raise();
+			Robot.intake.setSpeedManual(1.0, 1.0);
+			waitTimer.start();
+			state++;
+			break;
+		case 2:
+			if(waitTimer.get() > 3.0){
+				waitTimer.reset();
+				waitTimer.stop();
+				state++;
+			}
+			break;
+		case 3:
+			Robot.intake.retract();
+			Robot.elevator.goToPreset(2);
+			driverSpin.setTarget(0.0);
+			waitTimer.start();
+			state++;
+			break;
+		case 4:
+			if(waitTimer.get() > 2.5){
+				Robot.elevator.goToPreset(0);
+				waitTimer.reset();
+				waitTimer.stop();
+				state++;
+			}
+			break;
+		case 5:
+			XY = ShakerDrive.rotate(5, 0, angle);
+			driverY.setTarget(XY[1]);
+			driverX.setTarget(XY[0]);
+			driverSpin.setTarget(0);
+			state++;
+			break;
+		case 6:
+			if(atTarget(false)){
+				XY = ShakerDrive.rotate(0, 1, angle);
+				driverY.setTarget(XY[1]);
+				driverX.setTarget(XY[0]);
+				driverSpin.setTarget(0);
+				state++;
+			}
+			break;
+		case 7:
+			if(atTarget(false)){
+				state++;
+			}
+			break;
+		case 8:
+			Robot.intake.extend();
+			Robot.elevator.retract();
+			Robot.intake.setSpeedManual(1.0, 1.0);
+			waitTimer.start();
+			state++;
+			break;
+		case 9:
+			if(waitTimer.get() > 3.0){
+				waitTimer.reset();
+				waitTimer.stop();
+				state++;
+			}
+			break;
+		case 10:
+			Robot.intake.retract();
+			Robot.elevator.goToPreset(1);
+			driverSpin.setTarget(0.0);
+			waitTimer.start();
+			state++;
+			break;
+		case 11:
+			if(waitTimer.get() > 2.0){
+				waitTimer.reset();
+				waitTimer.stop();
+				XY = ShakerDrive.rotate(0, -9.5, angle);
+				driverY.setTarget(XY[1]);
+				driverX.setTarget(XY[0]);
+				driverSpin.setTarget(0);
+				state++;
+			}
+			break;
+		case 12:
+			if(atTarget(false)){
+				state++;	
+			}
+			break;
+		case 13:
+			Robot.dropper.drop();
+			state++;
+			break;
+		case 0: default:
+			stop();
+		}
+	}
+	private void ThreeTote(){//robot has to be set at back corner of the left tote when looking from middle of field*human player staion*/x = =\*human player staion*
+		switch(state){
+		case 1:
+			Robot.intake.extend();
+			Robot.elevator.retract();
+			Robot.dropper.raise();
+			Robot.intake.setSpeedManual(1.0, 1.0);
+			waitTimer.start();
+			state++;
+			break;
+		case 2:
+			if(waitTimer.get() > 3.0){
+				waitTimer.reset();
+				waitTimer.stop();
+				state++;
+			}
+			break;
+		case 3:
+			Robot.intake.retract();
+			Robot.elevator.goToPreset(3);
+			driverSpin.setTarget(0.0);
+			waitTimer.start();
+			state++;
+			break;
+		case 4:
+			if(waitTimer.get() > 2.75){
+				Robot.elevator.goToPreset(0);
+				waitTimer.reset();
+				waitTimer.stop();
+				state++;
+			}
+			break;
+		case 5:
+			XY = ShakerDrive.rotate(5, 0, angle);
+			driverY.setTarget(XY[1]);
+			driverX.setTarget(XY[0]);
+			driverSpin.setTarget(0);
+			state++;
+			break;
+		case 6:
+			if(atTarget(false)){
+				XY = ShakerDrive.rotate(0, 1, angle);
+				driverY.setTarget(XY[1]);
+				driverX.setTarget(XY[0]);
+				driverSpin.setTarget(0);
+				state++;
+			}
+			break;
+		case 7:
+			if(atTarget(false)){
+				state++;
+			}
+			break;
+		case 8:
+			Robot.intake.extend();
+			Robot.elevator.retract();
+			Robot.intake.setSpeedManual(1.0, 1.0);
+			waitTimer.start();
+			state++;
+			break;
+		case 9:
+			if(waitTimer.get() > 3.0){
+				waitTimer.reset();
+				waitTimer.stop();
+				state++;
+			}
+			break;
+		case 10:
+			Robot.intake.retract();
+			Robot.elevator.goToPreset(2);
+			driverSpin.setTarget(0.0);
+			waitTimer.start();
+			state++;
+			break;
+		case 11:
+			if(waitTimer.get() > 2.5){
+				waitTimer.reset();
+				waitTimer.stop();
+				state++;
+			}
+			break;
+		case 12:
+			XY = ShakerDrive.rotate(5, 0, angle);
+			driverY.setTarget(XY[1]);
+			driverX.setTarget(XY[0]);
+			driverSpin.setTarget(0);
+			state++;
+			break;
+		case 13:
+			if(atTarget(false)){
+				XY = ShakerDrive.rotate(0, 1, angle);
+				driverY.setTarget(XY[1]);
+				driverX.setTarget(XY[0]);
+				driverSpin.setTarget(0);
+				state++;
+			}
+			break;
+		case 14:
+			if(atTarget(false)){
+				state++;
+			}
+			break;
+		case 15:
+			Robot.intake.extend();
+			Robot.elevator.retract();
+			Robot.intake.setSpeedManual(1.0, 1.0);
+			waitTimer.start();
+			state++;
+			break;
+		case 16:
+			if(waitTimer.get() > 3.0){
+				waitTimer.reset();
+				waitTimer.stop();
+				state++;
+			}
+			break;
+		case 17:
+			Robot.intake.retract();
+			Robot.elevator.goToPreset(1);
+			driverSpin.setTarget(0.0);
+			waitTimer.start();
+			state++;
+			break;
+		case 18:
+			if(waitTimer.get() > 2.0){
+				waitTimer.reset();
+				waitTimer.stop();
+				XY = ShakerDrive.rotate(0, -9.5, angle);
+				driverY.setTarget(XY[1]);
+				driverX.setTarget(XY[0]);
+				driverSpin.setTarget(0);
+				state++;
+			}
+			break;
+		case 19:
+			if(atTarget(false)){
+				state++;	
+			}
+			break;
+		case 20:
+			Robot.dropper.drop();
+			state++;
+			break;
+		case 0: default:
+			stop();
+		}
+	}
+	
+	
+	// not an option
+	private void OneCanOneTote(){//robot has to be set at back corner of the far right tote *human player staion*/= = x\*human player staion*
 		switch(state){
 		case 1:
 			Robot.intake.extend();
@@ -253,7 +472,7 @@ public class AutonRunner {
 			break;
 		case 3:
 			Robot.intake.retract();
-			Robot.elevator.autonLift(1);
+			Robot.elevator.goToPreset(1);
 			driverY.setTarget(-2.5);
 			driverX.setTarget(-2.25);
 			driverSpin.setTarget(0.0);
@@ -278,10 +497,10 @@ public class AutonRunner {
 			break;
 		case 7:
 			if(atAngle())
-				Robot.elevator.autonLift(0);
+				Robot.elevator.goToPreset(0);
 				state++;
 			break;
-		case 8:
+			case 8:
 			driverSpin.setTarget(90.0);
 			state++;
 			break;
@@ -306,9 +525,9 @@ public class AutonRunner {
 			state++;
 			break;
 		case 13:
-			if(waitTimer.get() > 5.0)
+			if(waitTimer.get() > 5.0){
 				waitTimer.reset();
-				state++;
+				state++;}
 			break;
 		case 14:
 			Robot.intake.setSpeedManual(0.3, 0.3);
@@ -324,7 +543,6 @@ public class AutonRunner {
 		case 0: default:
 			stop();
 		}
-		
 	}
 	private void OneCan(){//intake is set up touching the can either straight on or at an angle
 		switch(state){
@@ -335,26 +553,29 @@ public class AutonRunner {
 			state++;
 			break;
 		case 2:
-			if(waitTimer.get() > 5.0)
+			if(waitTimer.get() > 2.5){
 				waitTimer.reset();
 				state++;
+			}
 			break;
 		case 3:
 			Robot.intake.setSpeedManual(0.3, 0.3);//can be adjusted based on the ability of intake to hold the can
-			driverX.setTarget(0);
-			driverY.setTarget(-8.5);
+			XY = ShakerDrive.rotate(0, -9.5, angle);
+			driverY.setTarget(XY[1]);
+			driverX.setTarget(XY[0]);
 			driverSpin.setTarget(0);
 			state++;
 			break;
 		case 4:
-			if(atTarget(false))
+			if(atTarget(false)){
 				Robot.intake.retract();
+				state++;
+			}
 			break;
 		case 0: default:
 			stop();	
 		}
 	}
-	
 	
 	private void brokenAuton(){
 		switch(state){

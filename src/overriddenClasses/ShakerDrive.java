@@ -34,6 +34,10 @@ public class ShakerDrive extends RobotDrive implements MotorSafety{
         }
     }
 	
+	public static double[] rotate(double x, double y, double gyroAngle){
+		return rotateVector(x, y, gyroAngle);
+	}
+	
     public double[] mecanumDrive_Cartesian_report(double x, double y, double rotation, double gyroAngle) {
         if(!kMecanumCartesian_Reported) {
             UsageReporting.report(tResourceType.kResourceType_RobotDrive, getNumMotors(), tInstances.kRobotDrive_MecanumCartesian);

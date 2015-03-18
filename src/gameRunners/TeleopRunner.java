@@ -56,6 +56,12 @@ public class TeleopRunner {
 		if(Robot.operator.getRawButton(Constants.BUTTON_LS)){
 			elevator.goToPreset(0);
 		}
+
+		if(Robot.operator.getPOV(0) == Constants.POV_LEFT)
+			elevator.manualControl = true;
+		
+		if(Robot.operator.getPOV(0) == Constants.POV_RIGHT)
+			elevator.manualControl = false;
 		
 		// carry out the instructions given
 		elevator.run();
