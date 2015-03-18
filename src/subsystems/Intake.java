@@ -13,9 +13,6 @@ public class Intake {
 	public static Talon          rightTalon;
 	public static DoubleSolenoid leftSol;
 	public static DoubleSolenoid rightSol;
-	// state variables
-	//private boolean autoMode = false;
-	//private boolean haveTote = false;
 	
 	public Intake() {
 		leftTalon  = new Talon(Electronics.INTAKE_TALON_LEFT);
@@ -26,41 +23,10 @@ public class Intake {
 	}
 	
 	public void run() {
-//		if(Robot.operator.getRawButton(Constants.BUTTON_A)){
-//			if(getPistonState().equals("Unknown"))
-//				retract();
-//			else if(getPistonState().equals("Extended"))
-//				retract();
-//			else
-//				extend();
-//		}
-//		
-//		if(Robot.operator.getRawButton(Constants.BUTTON_X)){
-//			if(getPistonState(leftSol).equals("Unknown"))
-//				retract(leftSol);
-//			else if(getPistonState(leftSol).equals("Extended"))
-//				retract(leftSol);
-//			else
-//				extend(leftSol);
-//		}
-//		
-//		if(Robot.operator.getRawButton(Constants.BUTTON_B)){
-//			if(getPistonState(rightSol).equals("Unknown"))
-//				retract(rightSol);
-//			else if(getPistonState(rightSol).equals("Extended"))
-//				retract(rightSol);
-//			else
-//				extend(rightSol);
-//		}
-		
-		
 		if(Robot.operator.getRawButton(Constants.BUTTON_A))
 			this.retract();
 		if(Robot.operator.getRawButton(Constants.BUTTON_Y))
 			this.extend();
-		
-		
-		
 		
 		
 		double inputY = Robot.operator.getAxis(Constants.AXIS_RS_Y);
@@ -89,10 +55,7 @@ public class Intake {
 		leftTalon.set(0.0);
 		rightTalon.set(0.0);
 	}
-	
-	public void extend(DoubleSolenoid sol) { sol.set(Value.kForward); }
-	public void retract(DoubleSolenoid sol){ sol.set(Value.kReverse); }
-	
+
 	public void setSpeedManual(double leftSpeed, double rightSpeed) {
 		this.setSpeeds(leftSpeed, rightSpeed);
 	}
@@ -106,14 +69,6 @@ public class Intake {
 		if(leftSol.get().equals(Value.kReverse))
 			return "Retracted";
 		else if(leftSol.get().equals(Value.kForward))
-			return "Extended";
-		else
-			return "Unknown";
-	}
-	public String getPistonState(DoubleSolenoid sol){
-		if(sol.get().equals(Value.kReverse))
-			return "Retracted";
-		else if(sol.get().equals(Value.kForward))
 			return "Extended";
 		else
 			return "Unknown";

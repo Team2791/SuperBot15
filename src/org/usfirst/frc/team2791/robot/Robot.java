@@ -26,19 +26,17 @@ public class Robot extends IterativeRobot {
 		driver   = new ShakerJoystick(0);
 		operator = new ShakerJoystick(1);
 		
+		compressor = new Compressor();
 		encoders = new ShakerDriveEncoders();
     	dash     = new Dashboard();
     	mDrive   = new MecanumDrive();
     	elevator = new Elevator();
     	intake   = new Intake();
+    	dropper  = new Dropper();
     	
     	teleopRunner = new TeleopRunner();
     	autonRunner  = new AutonRunner();
-    	
-    	compressor = new Compressor();
 //    	camera = new ShakerCamera();
-    	
-    	dropper = new Dropper();
 	}	
 
 	public void autonomousInit(){
@@ -48,7 +46,6 @@ public class Robot extends IterativeRobot {
 	}
     public void autonomousPeriodic(){
 		dash.debug();
-		
     	autonRunner.runPeriodic();
     }
 
@@ -72,7 +69,6 @@ public class Robot extends IterativeRobot {
     		encoders.encoderX.reset();
     		encoders.encoderY.reset();
     	}
-    	
     	
     	Robot.dash.debug();
     }
