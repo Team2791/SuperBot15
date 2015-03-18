@@ -59,6 +59,11 @@ public class ShakerDrive extends RobotDrive implements MotorSafety{
         wheelSpeeds[MotorType.kRearRight_val] = xIn + yIn - rotation;
 
         normalize(wheelSpeeds);
+        
+        // WPI lib got updated and changed this
+        byte syncGroup = (byte)0x80;
+        byte m_syncGroup = syncGroup;
+        
         m_frontLeftMotor.set(wheelSpeeds[MotorType.kFrontLeft_val] * m_invertedMotors[MotorType.kFrontLeft_val] * m_maxOutput, m_syncGroup);
         m_frontRightMotor.set(wheelSpeeds[MotorType.kFrontRight_val] * m_invertedMotors[MotorType.kFrontRight_val] * m_maxOutput, m_syncGroup);
         m_rearLeftMotor.set(wheelSpeeds[MotorType.kRearLeft_val] * m_invertedMotors[MotorType.kRearLeft_val] * m_maxOutput, m_syncGroup);

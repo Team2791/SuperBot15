@@ -36,7 +36,7 @@ public class Robot extends IterativeRobot {
     	autonRunner  = new AutonRunner();
     	
     	compressor = new Compressor();
-    	camera = new ShakerCamera();
+//    	camera = new ShakerCamera();
     	
     	dropper = new Dropper();
 	}	
