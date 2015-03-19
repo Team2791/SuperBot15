@@ -78,7 +78,7 @@ public class Constants {
 	public static final double ELEVATOR_DOWNWARDS_SCALE = 0.30;
 	public static final double ELEVATOR_MAX_HEIGHT     = 70.0;
 	public static final double ELEVATOR_STOP_ZONE      = 0.15;
-	public static final double ELEVATOR_SPEED_THRESHOLD = 5;
+	public static final double ELEVATOR_SPEED_THRESHOLD = 3;
 	public static final double ELEVATOR_DIST_PER_PULSE = 70.0 / 11.555 / 128.0; // 70.0 / 12.0 / ... for feet - also adjust presets
 	public static final double ELEVATOR_MIN_SPEED      = 0.1;
 	public static final double ELEVATOR_PISTON_ERROR_THRESHOLD= 3;

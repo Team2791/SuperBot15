@@ -2,12 +2,14 @@ package gameRunners;
 import org.usfirst.frc.team2791.robot.*;
 
 import subsystems.Elevator;
+import subsystems.Intake;
 import config.Constants;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 public class TeleopRunner {
 	// refrences to the subsystems for easier access
-	Elevator elevator = Robot.elevator;;
+	Elevator elevator = Robot.elevator;
+	Intake intake = Robot.intake;
 	
 	// elevator control related variables
 	private boolean triggeredInc  = false;
@@ -36,6 +38,7 @@ public class TeleopRunner {
 		}
 		if(triggeredInc && !Robot.operator.getRawButton(Constants.BUTTON_RB)){
 			elevator.increasePreset();
+			//intake.retract();
 			triggeredInc = false;
 		}
 		

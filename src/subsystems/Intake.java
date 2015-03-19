@@ -23,23 +23,31 @@ public class Intake {
 	}
 	
 	public void run() {
-		if(Robot.operator.getRawButton(Constants.BUTTON_A))
+		if(Robot.driver.getRawButton(Constants.BUTTON_A))
 			this.retract();
-		if(Robot.operator.getRawButton(Constants.BUTTON_Y))
+		if(Robot.driver.getRawButton(Constants.BUTTON_Y)){
 			this.extend();
+			Robot.dropper.raise();
+		}
 		
+		//double inputY = Robot.operator.getAxis(Constants.AXIS_RS_Y);
+		//double inputX = Robot.operator.getAxis(Constants.AXIS_RS_X);
 		
-		double inputY = Robot.operator.getAxis(Constants.AXIS_RS_Y);
-		double inputX = Robot.operator.getAxis(Constants.AXIS_RS_X);
+		double inputRT = Robot.driver.getAxis(Constants.AXIS_RT);
+		double inputLT = Robot.driver.getAxis(Constants.AXIS_LT);
+		
+		double netInput = inputRT - inputLT;
 		
 		// check signs. rs-> = intake right side, rs<- = intake left side
 			// maybe swap to get clockwise/counterclockwise bin rotation
-		if(inputX > Constants.INTAKE_DEADZONE)
+		/*if(inputX > Constants.INTAKE_DEADZONE)
 			setSpeedManual(0.0, inputX);
 		else if(inputX < -Constants.INTAKE_DEADZONE)
 			setSpeedManual(-inputX, 0.0);
 		else
-			setSpeedManual(inputY,inputY);		
+			setSpeedManual(inputY,inputY);*/
+		
+		setSpeedManual(netInput, netInput);
 	}
 	
 	public void extend() {
@@ -61,8 +69,8 @@ public class Intake {
 	}
 	
 	private void setSpeeds(double leftSpeed, double rightSpeed){ 
-		leftTalon.set(leftSpeed);
-		rightTalon.set(-rightSpeed);
+		leftTalon.set(-leftSpeed);
+		rightTalon.set(rightSpeed);
 	}
 	
 	public String getPistonState(){

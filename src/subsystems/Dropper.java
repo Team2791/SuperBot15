@@ -3,7 +3,7 @@ package subsystems;
 import org.usfirst.frc.team2791.robot.Robot;
 
 import config.Constants;
-import config.Electronics;
+import config.*;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 

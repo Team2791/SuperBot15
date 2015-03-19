@@ -13,7 +13,7 @@ public class AutonRunner {
 	private double autonY_P, autonY_I, autonY_D;
 	private double autonSpin_P, autonSpin_I, autonSpin_D;
 	private int state = 0;
-	public Timer errorTimer, waitTimer;
+	public Timer errorTimer, waitTimer, autonTimer;
 	private int nextHook = 2;
 	private boolean broken = false;
 	private double angle = Constants.AUTON_ANGLE_START_POINT;
@@ -46,6 +46,7 @@ public class AutonRunner {
 		
 		errorTimer = new Timer();
 		waitTimer = new Timer();
+		autonTimer = new Timer();
 		
 		Robot.dash.getIntFix("Auton.Strat", 1);
 	}
@@ -87,7 +88,9 @@ public class AutonRunner {
 			break;
 		}*/
 		
-		OneTote();
+		//OneTote();
+		
+		destroyedAuto();
 		
 		
 		// make robot do what logic says
@@ -103,6 +106,36 @@ public class AutonRunner {
 	}
 	
 	// autonomous modes
+	
+	private void destroyedAuto(){
+		switch(state){
+		case 1:
+			Robot.intake.extend();
+			driverSpin.setTarget(0.0);
+			autonTimer.reset();
+			autonTimer.start();
+			driverX.setDisabled(true);
+			driverY.setDisabled(true);
+			state++;
+			// disable normal driving
+			broken = true;
+			break;
+		case 2:
+			Robot.mDrive.driveTrain.mecanumDrive_Cartesian(0.7, 0.10, 0, 0.0);
+			if(autonTimer.get() > 7.0) { // should be 7.5 for the real field
+				Robot.mDrive.driveTrain.mecanumDrive_Cartesian(0.0, 0, 0, 0.0);
+				state++;
+			}
+			break;
+		case 3:
+			Robot.mDrive.driveTrain.mecanumDrive_Cartesian(0.0, 0, 0, 0.0);
+		case 0:
+			default:
+		}
+	}
+	
+	
+	
 	private void driveDiamond() {
 		// first drive 3' forward
 		switch(state) {
