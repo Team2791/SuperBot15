@@ -51,7 +51,6 @@ public class AutonDriver{
     	PID_IN_USE = true;
     	setpoint = angle;
     }
-    
     public double getIPart(){
     	if(previousTime == 0.0 || I == 0.0)
     		return 0.0;
