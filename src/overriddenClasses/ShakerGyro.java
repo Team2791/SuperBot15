@@ -22,7 +22,6 @@ public class ShakerGyro extends SensorBase implements Runnable {
 	private Timer calibrationTimer;
 	
 	private double angle = 0;
-	private double angleOffset = 0;
 	private double rateOffset = 0;
 	private double last_update_time = -1;
 	private boolean recalibrate = false; 
@@ -75,8 +74,10 @@ public class ShakerGyro extends SensorBase implements Runnable {
 			System.out.println("Raw rate data: " + assemble_sensor_data(data));
 			System.out.println("Hex response: " + byteArrayToHex(data));
 		}
-		// add in the offset calulated during calibration
-		rate -= rateOffset;
+		// add in the offset calculated during calibration if it has been found
+		if(calibrated)
+			rate -= rateOffset;
+		
 		return rate;
 	}
 	
@@ -92,7 +93,7 @@ public class ShakerGyro extends SensorBase implements Runnable {
 	}
 	
 	public double getAngle(){
-		return angle - angleOffset;
+		return angle;
 	}
 	
 	public boolean currentlyCalibrating() {
@@ -112,18 +113,22 @@ public class ShakerGyro extends SensorBase implements Runnable {
 		rateOffset = 0;
 		reset();
 		// run the gyro normally for calibrationTime
-		while(calibrationTimer.get() < calibrationTime) {
+		double time_spent = calibrationTimer.get();
+		while(time_spent < calibrationTime) {
+			time_spent = calibrationTimer.get();
 			update();
 			Thread.sleep(updateDelayMs);
 		}
-		rateOffset = getAngle() / calibrationTimer.get();
+		// find the rate offset by dividing acumulated angle by the time spend calibrating
+		rateOffset = getAngle() / time_spent;
+		// set the current angle to 0
 		reset();
 		System.out.println("Done calibrating. Rate offset = " + rateOffset);
 		SmartDashboard.putNumber("Gyro rate offset", rateOffset);
 	}
 	
 	public void reset() {
-		angleOffset = angle;
+		angle = 0;
 	}
 	
 	/***************************************************************************//**
