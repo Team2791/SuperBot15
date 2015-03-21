@@ -30,13 +30,35 @@ public class Intake {
 			Robot.dropper.raise();
 		}
 		
+		
+		
 		//double inputY = Robot.operator.getAxis(Constants.AXIS_RS_Y);
 		//double inputX = Robot.operator.getAxis(Constants.AXIS_RS_X);
 		
 		double inputRT = Robot.driver.getAxis(Constants.AXIS_RT);
 		double inputLT = Robot.driver.getAxis(Constants.AXIS_LT);
 		
-		double netInput = inputRT - inputLT;
+		double inputOpRT = Robot.operator.getAxis(Constants.AXIS_RT);
+		double inputOpLT = Robot.operator.getAxis(Constants.AXIS_LT);
+		
+		double inputOpRS = Robot.operator.getAxis(Constants.AXIS_RS_X);
+		double inputOpRSY = Robot.operator.getAxis(Constants.AXIS_RS_Y);
+		double netInput = 0;
+		
+		if(Math.abs(inputOpRS) >= 0.15 && Math.abs(inputOpRSY) <= .15){
+			if(inputOpRS < 0)
+				setSpeedManual(0, -inputOpRS);
+			else if(inputOpRS > 0)
+				setSpeedManual(inputOpRS, 0);
+		}
+		else if (Math.abs(inputOpRSY) >= .15){
+			setSpeedManual(inputOpRSY, inputOpRSY);
+		}
+		else{
+			netInput = inputRT - inputLT + (inputOpRT - inputOpLT);
+			setSpeedManual(netInput, netInput);
+		}
+	}
 		
 		// check signs. rs-> = intake right side, rs<- = intake left side
 			// maybe swap to get clockwise/counterclockwise bin rotation
@@ -47,13 +69,14 @@ public class Intake {
 		else
 			setSpeedManual(inputY,inputY);*/
 		
-		setSpeedManual(netInput, netInput);
-	}
+	
+	
 	
 	public void extend() {
 		Robot.dropper.raise();
+		
 		leftSol.set(Value.kForward);
-		rightSol.set(Value.kForward);
+		rightSol.set(Value.kForward);		
 	}
 	
 	public void retract() {

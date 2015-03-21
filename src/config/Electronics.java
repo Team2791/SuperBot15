@@ -53,9 +53,9 @@ public class Electronics {
 	public static final int ELEVATOR_ENC_A   = 0;
 	public static final int ELEVATOR_ENC_B   = 1;
 	
-	public static final int FOLLOWER_X_ENC_A = 21;
-	public static final int FOLLOWER_X_ENC_B = 22;
+	public static final int FOLLOWER_X_ENC_A = 4;
+	public static final int FOLLOWER_X_ENC_B = 5;
 	
-	public static final int FOLLOWER_Y_ENC_A = 25;
-	public static final int FOLLOWER_Y_ENC_B = 10;
+	public static final int FOLLOWER_Y_ENC_A = 6;
+	public static final int FOLLOWER_Y_ENC_B = 7;
 }

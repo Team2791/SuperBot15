@@ -3,7 +3,7 @@ package subsystems;
 import org.usfirst.frc.team2791.robot.Robot;
 
 import config.Constants;
-import config.*;
+import config.Electronics;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
@@ -20,7 +20,8 @@ public class Dropper {
 			this.raise();
 		if(Robot.operator.getPOV(0) == Constants.POV_BOT){
 			this.drop();
-			Robot.elevator.goToPreset(0);
+			//Robot.elevator.goToPreset(0);
+			//Robot.elevator.autoLiftReset();
 		}
 	}
 	
@@ -34,7 +35,7 @@ public class Dropper {
 	}
 	
 	public void raise(){ 
-		piston.set(Value.kForward); 
+		piston.set(Value.kForward);
 	}
 	
 	public void drop() {

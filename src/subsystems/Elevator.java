@@ -29,12 +29,14 @@ public class Elevator{
 	private double	dropingToteHeight  = 0;
 	private int 	dropingTotePresetIndex  = 0;
 	private double  output = 0;
+	public boolean[] elevatorPositionTrack = {false, false, false, false, false, false};
 	
 	// auto lift related varaibles
-	private boolean autoLift = false;
+	public boolean autoLift = false;
 	private boolean toteReadyToPickup = false;
 	private Timer liftAtTargetTimer = new Timer();
-	private int botToteIndex = -1, stackHeight = 3;
+	public int botToteIndex = -1;
+	private int stackHeight = 3;
 		
 	public Elevator(){
 		lift = new Talon(Electronics.ELEVATOR_TALON);
@@ -48,7 +50,7 @@ public class Elevator{
 		
 		piston = new DoubleSolenoid(Electronics.ELEVATOR_PISTON_FOR, Electronics.ELEVATOR_PISTON_REV);
 		
-		liftAtTargetTimer.reset();
+		liftAtTargetTimer.start();
 	}
 	
 	// public get methods
@@ -122,12 +124,24 @@ public class Elevator{
 	
 	public void run() {
 		checkEncoderCalibration();
+		
+		// run the tote piston
+		if(getHeight() > Constants.ELEVATOR_PISTON_EXTEND_THRESHOLD) {
+			extendTotePiston();
+		} else {
+			retractTotePiston();
+		}
+		
 		if(!manualControl) {
 			
 			// based on where we are and what we want figure out what to do
 			// check if need to go up or down
 			double heightDiff = targetHeight - getHeight();
 			double holdingHeightDiff = dropingToteHeight - getHeight();
+			
+			// run the at target timer
+			if(!atTarget())
+				liftAtTargetTimer.reset();
 			
 			if(heightDiff < 0.05 && heightDiff > -0.1 && currentPresetIndex != 0) {
 				// if close don't move (much) or change tote piston
@@ -142,13 +156,6 @@ public class Elevator{
 					setOutput(0.7);
 				} else {
 					// the height difference is small which means we're closing in on the hooks
-					// don't extend for the bottom
-					if(currentPresetIndex == 0 || currentPresetIndex == 1) {
-						retractTotePiston();
-					} else {
-						extendTotePiston();
-					}	
-					
 					setOutput(0.25);
 					// record this tote height so the drop code knows how long to go slow
 					dropingToteHeight = targetHeight;
@@ -161,14 +168,10 @@ public class Elevator{
 					// this starts at 0 and gets larger as the elevator does down
 					if(holdingHeightDiff < Constants.ELEVATOR_SPEED_THRESHOLD) {
 						// still close to where the tote is being dropped off
-						// only extend when going to not bottom or first preset
-						if(currentPresetIndex != 0 && currentPresetIndex != 1)
-							extendTotePiston();
 						setOutput(-0.15);
 					} else {
 						// the height difference is large, record the tote is dropped off
 						holdingTote = false;
-						retractTotePiston();
 						// stay slow, will go fast in the else case
 						setOutput(-0.15);
 					}
@@ -178,11 +181,6 @@ public class Elevator{
 					if(heightDiff < -Constants.ELEVATOR_SPEED_THRESHOLD) {
 						// the height difference is large, we want to get there fast
 						setOutput(-0.8);
-						// retarct the tote piston if going to the bottom preset
-						// this might be the result of a bug, not enough time to find it
-						if(currentPresetIndex == 0) {
-							retractTotePiston();
-						}
 					} else {
 						// the height difference is small which means we're closing in on the target
 //						extendTotePiston();
@@ -190,17 +188,33 @@ public class Elevator{
 					}
 				}
 			}
-		SmartDashboard.putNumber("heightDiff", heightDiff);
-		SmartDashboard.putNumber("holdingHeightDiff", holdingHeightDiff);
-		} else { // if manual contrl
+			SmartDashboard.putNumber("heightDiff", heightDiff);
+			SmartDashboard.putNumber("holdingHeightDiff", holdingHeightDiff);
+			SmartDashboard.putBoolean("READY TO DROP", (atTarget() && liftAtTargetTimer.get() > Constants.ELEVATOR_AUTO_LIFT_SETTLE_TIME));
+		} else if (!autoLift){
 			targetHeight = getHeight();
-			setOutputManual(Robot.operator.getAxis(Constants.AXIS_LS_Y));
+			setOutputManual(-Robot.operator.getAxis(Constants.AXIS_LS_Y));
 		}
+		
 		
 		// otuptu
 		SmartDashboard.putNumber("targetHeight", targetHeight);
 		SmartDashboard.putNumber("dropingToteHeight", dropingToteHeight);
 		SmartDashboard.putBoolean("holdingTote", holdingTote);
+		
+		
+		
+		for(int x = 0; x < 6; x++){
+			elevatorPositionTrack[x] = false;
+		}
+		elevatorPositionTrack[currentPresetIndex] = true;
+
+		SmartDashboard.putBoolean("Ground", elevatorPositionTrack[0]);
+		SmartDashboard.putBoolean("Hook4", elevatorPositionTrack[5]);
+		SmartDashboard.putBoolean("Hook3", elevatorPositionTrack[4]);
+		SmartDashboard.putBoolean("Hook2", elevatorPositionTrack[3]);
+		SmartDashboard.putBoolean("Hook1", elevatorPositionTrack[2]);
+		SmartDashboard.putBoolean("BotPos", elevatorPositionTrack[1]);
 	}
 	
 	public void disable(){
@@ -217,36 +231,55 @@ public class Elevator{
 	public void setToteReadyToPickup(boolean value) {
 		// this is to set the varaible tote at bottom 
 		toteReadyToPickup = value;
+		if(value){
+			autoLift = true;
+			System.out.println("autolift set true");
+		}
 	}
 	
 	public void runAutoLift() {
-		if(autoLift) {
+		if(autoLift){
+			System.out.println("autolift is true, executing runautolift");
 			// check if the tote is at the bottom
 			if(getToteReadyToPickup() && atBot()) {
 				// chose the preset to send it to and record it
 				// if there are no totes on the elevator
 				if(botToteIndex == -1) {
-					int target = stackHeight;
+					int target = Constants.ELEVATOR_STACK_HEIGHT;
 					goToPreset(target);
 					botToteIndex = target;
 				} else {
-					// deincrememnt botToteIndex then tell goToPreset to go there
+					// decrememnt botToteIndex then tell goToPreset to go there
 					goToPreset(--botToteIndex);
+					System.out.println("decreasing bot tote index");
 				}
 				// reset tote ready to pickup. Take this out when we have sensors
 				setToteReadyToPickup(false);
-				// reset the tote 
 				
 				// don't bother checking other if statments
 				return;
-			} // end if(getToteReadyToPickup() && atBot()) {
-			
-			// check if the tote is at the top and we should start counting
-			if(atTarget() && liftAtTargetTimer.get() > Constants.ELEVATOR_AUTO_LIFT_SETTLE_TIME) {
+			// if not grabbing a tote check if it's time to drop one off
+			} else if(atTarget() && liftAtTargetTimer.get() > Constants.ELEVATOR_AUTO_LIFT_SETTLE_TIME) {
 				// tell the elevator to back to the bottom
-				goToPreset(0);
-			} 
+				System.out.println("at target, going down");
+				if(botToteIndex != 1){
+					System.out.println("going to preset 0, bottoteindex is not 1");
+					goToPreset(0);
+				}
+				autoLift = false;
+				System.out.println("autolift set false");
+			}
 		}
+		
+		SmartDashboard.putNumber("botToteIndex", botToteIndex);
+		SmartDashboard.putNumber("Going to hook:", botToteIndex-1);
+		SmartDashboard.putBoolean("ToteReadyToPickup", getToteReadyToPickup());
+		SmartDashboard.putNumber("stackHeight", stackHeight);
+		SmartDashboard.putNumber("liftAtTargetTimer", liftAtTargetTimer.get());
+	}
+	
+	public void autoLiftReset() {
+		botToteIndex = -1;
 	}
 	
 	/**
@@ -304,7 +337,7 @@ public class Elevator{
 	
 	public String getControlState(){
 		if(manualControl)
-			return "Manual";
+			return "Manual/AutoLift";
 		else
 			return "Automatic";
 	}

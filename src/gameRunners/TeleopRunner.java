@@ -14,6 +14,7 @@ public class TeleopRunner {
 	// elevator control related variables
 	private boolean triggeredInc  = false;
 	private boolean triggeredDec  = false;
+	private boolean triggeredHaveTote  = false;
 	private boolean triggeredSwap = false;
 	private boolean manualControl = true;
 	
@@ -37,7 +38,12 @@ public class TeleopRunner {
 			triggeredInc = true;
 		}
 		if(triggeredInc && !Robot.operator.getRawButton(Constants.BUTTON_RB)){
-			elevator.increasePreset();
+			if(elevator.manualControl){
+				if(elevator.botToteIndex < 5)
+					elevator.botToteIndex++;
+			} else {
+				elevator.increasePreset();
+			}
 			//intake.retract();
 			triggeredInc = false;
 		}
@@ -47,22 +53,32 @@ public class TeleopRunner {
 			triggeredDec = true;
 		}
 		if(triggeredDec && !Robot.operator.getRawButton(Constants.BUTTON_LB)){
-			elevator.decreasePreset();
-			triggeredDec = false;
-		}
-		
-		// drop to bottom button
-		if(Robot.operator.getRawButton(Constants.BUTTON_LS)){
-			elevator.goToPreset(0);
+			if(!elevator.manualControl){
+				elevator.goToPreset(0);
+				elevator.botToteIndex = -1;
+			}
 		}
 
-		if(Robot.operator.getPOV(0) == Constants.POV_LEFT)
-			elevator.manualControl = true;
-		
-		if(Robot.operator.getPOV(0) == Constants.POV_RIGHT)
+		if(Robot.operator.getPOV(0) == Constants.POV_RIGHT){
 			elevator.manualControl = false;
+		}
+		if(Robot.operator.getPOV(0) == Constants.POV_LEFT){
+			elevator.manualControl = true;
+		}
+		
+		// if doing auto run tell the robot it's time to pickup a tote
+		if(Robot.operator.getRawButton(Constants.BUTTON_A)){
+			triggeredHaveTote = true;
+		}
+		if(triggeredHaveTote && !Robot.operator.getRawButton(Constants.BUTTON_A)){
+			System.out.println("Manualy setting have tote to true");
+			System.out.println("button A pressed");
+			elevator.setToteReadyToPickup(true);
+			triggeredHaveTote = false;
+		}
 		
 		// carry out the instructions given
+		elevator.runAutoLift();
 		elevator.run();
 	}
 }

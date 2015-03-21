@@ -2,9 +2,7 @@ package subsystems;
 import org.usfirst.frc.team2791.robot.*;
 
 import edu.wpi.first.wpilibj.SPI;
-import config.Constants;
-import config.DrivePID;
-import config.Electronics;
+import config.*;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Talon;
 import overriddenClasses.*;
@@ -72,7 +70,16 @@ public class MecanumDrive {
 		
 		if(!Constants.CALIBRATION_MODE){
 			// driverInput = Robot.controls.driver.getRawAxis(3) - Robot.controls.driver.getRawAxis(2); // triggers
-			driverInput = Robot.driver.getAxis(Constants.AXIS_RS_X);
+			
+			if(Robot.driver.getRawButton(Constants.BUTTON_RB) && Robot.driver.getRawButton(Constants.BUTTON_LB))
+				driverInput = 0.0;
+			else if(Robot.driver.getRawButton(Constants.BUTTON_RB))
+				driverInput = 0.35;
+			else if(Robot.driver.getRawButton(Constants.BUTTON_LB))
+				driverInput = -0.35;
+			else
+				driverInput = Robot.driver.getAxis(Constants.AXIS_RS_X);
+			
 			if(PID_IN_USE) {
 				if(driverInput != 0)
 					driftingFromTurn = true;
@@ -100,7 +107,11 @@ public class MecanumDrive {
 				spin = driverInput;
 			}
 			
-			if(!fieldCentric)
+			if(Robot.driver.getPOV(0)==Constants.POV_RIGHT)
+				wheelSpeeds = driveTrain.mecanumDrive_Cartesian_report(0.45, 0, spin, 0);
+			else if(Robot.driver.getPOV(0)==Constants.POV_LEFT)
+				wheelSpeeds = driveTrain.mecanumDrive_Cartesian_report(-0.45, 0, spin, 0);
+			else if(!fieldCentric)
 				wheelSpeeds = driveTrain.mecanumDrive_Cartesian_report(xSpeed, ySpeed, spin, 0);
 			else
 				wheelSpeeds = driveTrain.mecanumDrive_Cartesian_report(xSpeed, ySpeed, spin, gyro.getAngle());

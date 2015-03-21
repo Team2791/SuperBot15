@@ -89,8 +89,8 @@ public class AutonRunner {
 		}*/
 		
 		//OneTote();
-		
-		destroyedAuto();
+		slobPush();
+		//destroyedAuto();
 		
 		
 		// make robot do what logic says
@@ -106,6 +106,41 @@ public class AutonRunner {
 	}
 	
 	// autonomous modes
+	
+	private void slobAuto(){
+		switch(state){
+		case 1:
+			driverSpin.setTarget(0.0);
+			driverY.setTarget(-6);
+			driverX.setTarget(0);
+			state++;
+			break;
+		case 2:
+			if(atTarget(false))
+				state++;
+			break;
+		case 0:
+			default:
+		}
+	}
+	
+	private void slobPush(){
+		switch(state){
+		case 1:
+			Robot.intake.extend();
+			driverSpin.setTarget(0.0);
+			driverY.setTarget(0);
+			driverX.setTarget(-15.3); // -15.3
+			state++;
+			break;
+		case 2:
+			if(atTarget(false))
+				state++;
+			break;
+		case 0:
+			default:
+		}
+	}
 	
 	private void destroyedAuto(){
 		switch(state){
