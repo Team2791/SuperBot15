@@ -5,4 +5,3 @@ stack auto (?)
 clean elevator code
 	autoLift, Preset-based, manual
 retune drive PID due to change of CG (?)
-easier to read Dashboard
