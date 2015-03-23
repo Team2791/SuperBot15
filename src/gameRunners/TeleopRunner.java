@@ -15,8 +15,9 @@ public class TeleopRunner {
 	private boolean triggeredInc  = false;
 	private boolean triggeredDec  = false;
 	private boolean triggeredHaveTote  = false;
-	private boolean triggeredSwap = false;
+	private boolean triggeredSwapToManual = false, triggeredSwapToPreset = false, triggeredSwapToAuto = false;
 	private boolean manualControl = true;
+	public int modeCount = 3;
 	
 	public void run(){
 		Robot.mDrive.run();
@@ -26,10 +27,6 @@ public class TeleopRunner {
 		
 		Robot.compressor.start();
 		Robot.dropper.run();
-		
-		if(Robot.driver.getRawButton(Constants.BUTTON_LB)){
-			Robot.encoders.resetAll();
-		}	
 	}
 	
 	private void elevatorTeleop() {
@@ -38,12 +35,12 @@ public class TeleopRunner {
 			triggeredInc = true;
 		}
 		if(triggeredInc && !Robot.operator.getRawButton(Constants.BUTTON_RB)){
-			if(elevator.manualControl){
-				if(elevator.botToteIndex < 5)
-					elevator.botToteIndex++;
-			} else {
+			if(elevator.isPresetMode())
 				elevator.increasePreset();
-			}
+			
+			if(elevator.isAutoLift())
+				elevator.setStackHeight(elevator.getStackHeight()+1);
+			
 			//intake.retract();
 			triggeredInc = false;
 		}
@@ -53,21 +50,64 @@ public class TeleopRunner {
 			triggeredDec = true;
 		}
 		if(triggeredDec && !Robot.operator.getRawButton(Constants.BUTTON_LB)){
-			if(!elevator.manualControl){
+			if(elevator.isPresetMode())
 				elevator.goToPreset(0);
-				elevator.botToteIndex = -1;
-			}
-		}
-
-		if(Robot.operator.getPOV(0) == Constants.POV_RIGHT){
-			elevator.manualControl = false;
-		}
-		if(Robot.operator.getPOV(0) == Constants.POV_LEFT){
-			elevator.manualControl = true;
+			
+			if(elevator.isAutoLift())
+				elevator.setStackHeight(elevator.getStackHeight()-1);
+			
+			triggeredDec = false;
 		}
 		
+		// --------- manual swap modes --------- //
+		if(Robot.operator.getRawButton(Constants.BUTTON_LS)){
+			triggeredSwapToManual = true;
+		}
+		if(triggeredSwapToManual && !Robot.operator.getRawButton(Constants.BUTTON_LS)){
+			elevator.manualMode = true;
+			elevator.autoLiftMode = false;
+			elevator.presetMode = false;
+			
+			elevator.setOutputManual(0.0);
+			
+			triggeredSwapToManual = false;
+		}
+		
+		if(Robot.operator.getRawButton(Constants.BUTTON_ST)){
+			triggeredSwapToAuto = true;
+		}
+		if(triggeredSwapToAuto && !Robot.operator.getRawButton(Constants.BUTTON_ST)){
+			elevator.manualMode = false;
+			elevator.autoLiftMode = true;
+			elevator.presetMode = false;
+			
+			elevator.goToPreset(0);
+			
+			triggeredSwapToAuto = false;
+		}
+		
+		if(Robot.operator.getRawButton(Constants.BUTTON_SEL)){
+			triggeredSwapToPreset = true;
+		}
+		if(triggeredSwapToPreset && !Robot.operator.getRawButton(Constants.BUTTON_SEL)){
+			elevator.manualMode = false;
+			elevator.autoLiftMode = false;
+			elevator.presetMode = true;
+			
+			elevator.setTargetHeight(elevator.getHeight());
+			
+			triggeredSwapToPreset = false;
+		}
+		
+		
+		
+		
+		
+		
+		
+		
 		// if doing auto run tell the robot it's time to pickup a tote
-		if(Robot.operator.getRawButton(Constants.BUTTON_A)){
+		if(elevator.isAutoLift() && Robot.operator.getRawButton(Constants.BUTTON_A)){
 			triggeredHaveTote = true;
 		}
 		if(triggeredHaveTote && !Robot.operator.getRawButton(Constants.BUTTON_A)){
@@ -78,7 +118,6 @@ public class TeleopRunner {
 		}
 		
 		// carry out the instructions given
-		elevator.runAutoLift();
-		elevator.run();
+		elevator.newRun();
 	}
 }

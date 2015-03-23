@@ -1,28 +1,8 @@
 to do	
 
 
-	fix electronics slots
-
-	dashboard competition mode
-		multiple dash files....
-		
-	test toggle stuff
-	
-	add piston height constant (below first kickstand)
-	
-	simulate autons
-		chris: 1 can / 1 tote + 1 can
-		justin: 1 tote / 2 cans
-		
-	
-		
-		
-auton:
-1 can
-1 tote
-2 cans
-1 tote + 1 can
-
-^^ bring to auto zone
-
-stack auto
+stack auto (?)
+clean elevator code
+	autoLift, Preset-based, manual
+retune drive PID due to change of CG (?)
+easier to read Dashboard
