@@ -30,9 +30,13 @@ public class Intake {
 			Robot.dropper.raise();
 		}
 		
+		double inputRT = Robot.driver.getAxis(Constants.AXIS_RT);
+		double inputLT = Robot.driver.getAxis(Constants.AXIS_LT);
+		double netInput = inputRT - inputLT;
+		setSpeeds(netInput, netInput);
 		
 		
-		//double inputY = Robot.operator.getAxis(Constants.AXIS_RS_Y);
+		/*//double inputY = Robot.operator.getAxis(Constants.AXIS_RS_Y);
 		//double inputX = Robot.operator.getAxis(Constants.AXIS_RS_X);
 		
 		double inputRT = Robot.driver.getAxis(Constants.AXIS_RT);
@@ -57,20 +61,8 @@ public class Intake {
 		else{
 			netInput = inputRT - inputLT + (inputOpRT - inputOpLT);
 			setSpeedManual(netInput, netInput);
-		}
+		}*/
 	}
-		
-		// check signs. rs-> = intake right side, rs<- = intake left side
-			// maybe swap to get clockwise/counterclockwise bin rotation
-		/*if(inputX > Constants.INTAKE_DEADZONE)
-			setSpeedManual(0.0, inputX);
-		else if(inputX < -Constants.INTAKE_DEADZONE)
-			setSpeedManual(-inputX, 0.0);
-		else
-			setSpeedManual(inputY,inputY);*/
-		
-	
-	
 	
 	public void extend() {
 		Robot.dropper.raise();

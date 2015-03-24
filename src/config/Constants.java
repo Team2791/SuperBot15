@@ -28,7 +28,7 @@ public class Constants {
 	// --------- joysticks --------- //
 	
 	public static final double JOYSTICK_DEADZONE = 0.03;
-	public static final double JOYSTICK_SCALE    = 1.00;
+	public static       double JOYSTICK_SCALE    = 1.00;
 	public static final double ELEVATOR_SCALE    = 0.70; // used on elevator teleop
 	public static final double ELEVATOR_DEADZONE = 0.10; // used on elevator teleop
 	public static final double AXIS_DEADZONE     = 0.05; // used for rotation
@@ -72,18 +72,18 @@ public class Constants {
 	
 	// --------- elevator --------- //
 	
-	public static final double[] ELEVATOR_PRESETS       = {0.0, 6.0, 20.9, 35.85, 50.65, 65.72};
-	public static final double ELEVATOR_MAX_HEIGHT     = 70.0;
-	public static final double ELEVATOR_STOP_ZONE      = 0.15;
-	public static final double ELEVATOR_SPEED_THRESHOLD = 3;
-	public static final double ELEVATOR_DIST_PER_PULSE = 70.0 / 11.555 / 128.0; // 70.0 / 12.0 / ... for feet - also adjust presets
-	public static final double ELEVATOR_MIN_SPEED      = 0.1;
-	public static final double ELEVATOR_PISTON_EXTEND_THRESHOLD = 17;
+	public static final double[] ELEVATOR_PRESETS                 = {0.0, 6.0, 20.9, 35.85, 50.65, 65.72};
+	public static final double   ELEVATOR_MAX_HEIGHT              = 70.0;
+	public static final double   ELEVATOR_STOP_ZONE               = 0.15;
+	public static final double   ELEVATOR_SPEED_THRESHOLD         = 3;
+	public static final double   ELEVATOR_DIST_PER_PULSE          = 70.0 / 11.555 / 128.0; // 70.0 / 12.0 / ... for feet - also adjust presets
+	public static final double   ELEVATOR_MIN_SPEED               = 0.1;
+	public static final double   ELEVATOR_PISTON_EXTEND_THRESHOLD = 17;
 	
 	// auto lift conatants
 	public static final double ELEVATOR_AT_TARGET_ERROR_THRESHOLD = 0.2;
-	public static final double ELEVATOR_AUTO_LIFT_SETTLE_TIME = 0.5;
-	public static final int ELEVATOR_STACK_HEIGHT          = 5;
+	public static final double ELEVATOR_AUTO_LIFT_SETTLE_TIME     = 0.5;
+	public static final int ELEVATOR_STACK_HEIGHT                 = 5;
 	
 	// --------- intake --------- //
 	

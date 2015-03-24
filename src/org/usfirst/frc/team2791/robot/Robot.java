@@ -53,6 +53,10 @@ public class Robot extends IterativeRobot {
     
     public void testPeriodic(){
     	compressor.start();
+    	Robot.dash.debug();
+    	Robot.intake.run();
+    	Robot.teleopRunner.elevatorTeleop();
+    	Robot.dropper.run();
     }
     
     public void disabledInit() {

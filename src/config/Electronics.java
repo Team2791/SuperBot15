@@ -3,7 +3,6 @@ public class Electronics {
 	
 	// --------- misc --------- //
 	
-	public static final String CAMERA_IP = "10.27.91.11";
 	public static final int    GYRO      = 1;
 	
 	// --------- drive train --------- //
@@ -37,18 +36,6 @@ public class Electronics {
 	public static final int DROPPER_PISTON_DOWN  = 0;
 		
 	// -------------encoders---------------------- //
-	
-	public static final int FRONT_LEFT_ENC_A  = 30;
-	public static final int FRONT_LEFT_ENC_B  = 31;
-	
-	public static final int FRONT_RIGHT_ENC_A = 12;
-	public static final int FRONT_RIGHT_ENC_B = 13;
-	
-	public static final int BACK_LEFT_ENC_A  = 23;
-	public static final int BACK_LEFT_ENC_B  = 24;
-	
-	public static final int BACK_RIGHT_ENC_A = 15;
-	public static final int BACK_RIGHT_ENC_B = 14;
 	
 	public static final int ELEVATOR_ENC_A   = 0;
 	public static final int ELEVATOR_ENC_B   = 1;

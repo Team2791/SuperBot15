@@ -4,7 +4,6 @@ import org.usfirst.frc.team2791.robot.*;
 import subsystems.Elevator;
 import subsystems.Intake;
 import config.Constants;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 public class TeleopRunner {
 	// refrences to the subsystems for easier access
@@ -16,8 +15,6 @@ public class TeleopRunner {
 	private boolean triggeredDec  = false;
 	private boolean triggeredHaveTote  = false;
 	private boolean triggeredSwapToManual = false, triggeredSwapToPreset = false, triggeredSwapToAuto = false;
-	private boolean manualControl = true;
-	public int modeCount = 3;
 	
 	public void run(){
 		Robot.mDrive.run();
@@ -29,7 +26,7 @@ public class TeleopRunner {
 		Robot.dropper.run();
 	}
 	
-	private void elevatorTeleop() {
+	public void elevatorTeleop() {
 		// --------- manual increase --------- //
 		if(Robot.operator.getRawButton(Constants.BUTTON_RB)){
 			triggeredInc = true;
@@ -94,17 +91,23 @@ public class TeleopRunner {
 			elevator.autoLiftMode = false;
 			elevator.presetMode = true;
 			
-			elevator.setTargetHeight(elevator.getHeight());
+			double tempHeight = elevator.getHeight();
+			
+			elevator.setTargetHeight(tempHeight);
+			
+			for(int c = 0; c < 5; c++){
+				if(c != 5){
+					if(tempHeight > elevator.getPresetValue(c) && tempHeight < elevator.getPresetValue(c+1)){
+						elevator.currentPresetIndex = c;
+						break;
+					}
+				}
+				else
+					elevator.currentPresetIndex = 5;
+			}
 			
 			triggeredSwapToPreset = false;
-		}
-		
-		
-		
-		
-		
-		
-		
+		}		
 		
 		// if doing auto run tell the robot it's time to pickup a tote
 		if(elevator.isAutoLift() && Robot.operator.getRawButton(Constants.BUTTON_A)){

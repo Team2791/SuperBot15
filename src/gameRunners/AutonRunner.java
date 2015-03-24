@@ -14,7 +14,6 @@ public class AutonRunner {
 	private double autonSpin_P, autonSpin_I, autonSpin_D;
 	private int state = 0;
 	public Timer errorTimer, waitTimer, autonTimer;
-	private int nextHook = 2;
 	private boolean broken = false;
 	private double angle = Constants.AUTON_ANGLE_START_POINT;
 	private double[] XY;
@@ -230,7 +229,7 @@ public class AutonRunner {
 		switch(state){
 		case 1:
 			Robot.intake.extend();
-			Robot.elevator.retract();
+			Robot.elevator.retractTotePiston();
 			Robot.dropper.raise();
 			Robot.intake.setSpeedManual(1.0, 1.0);
 			waitTimer.start();
@@ -279,7 +278,7 @@ public class AutonRunner {
 		switch(state){
 		case 1:
 			Robot.intake.extend();
-			Robot.elevator.retract();
+			Robot.elevator.retractTotePiston();
 			Robot.dropper.raise();
 			Robot.intake.setSpeedManual(1.0, 1.0);
 			waitTimer.start();
@@ -330,7 +329,7 @@ public class AutonRunner {
 			break;
 		case 8:
 			Robot.intake.extend();
-			Robot.elevator.retract();
+			Robot.elevator.retractTotePiston();
 			Robot.intake.setSpeedManual(1.0, 1.0);
 			waitTimer.start();
 			state++;
@@ -377,7 +376,7 @@ public class AutonRunner {
 		switch(state){
 		case 1:
 			Robot.intake.extend();
-			Robot.elevator.retract();
+			Robot.elevator.retractTotePiston();
 			Robot.dropper.raise();
 			Robot.intake.setSpeedManual(1.0, 1.0);
 			waitTimer.start();
@@ -428,7 +427,7 @@ public class AutonRunner {
 			break;
 		case 8:
 			Robot.intake.extend();
-			Robot.elevator.retract();
+			Robot.elevator.retractTotePiston();
 			Robot.intake.setSpeedManual(1.0, 1.0);
 			waitTimer.start();
 			state++;
@@ -477,7 +476,7 @@ public class AutonRunner {
 			break;
 		case 15:
 			Robot.intake.extend();
-			Robot.elevator.retract();
+			Robot.elevator.retractTotePiston();
 			Robot.intake.setSpeedManual(1.0, 1.0);
 			waitTimer.start();
 			state++;
@@ -521,97 +520,6 @@ public class AutonRunner {
 		}
 	}
 	
-	
-	// not an option
-	private void OneCanOneTote(){//robot has to be set at back corner of the far right tote *human player staion*/= = x\*human player staion*
-		switch(state){
-		case 1:
-			Robot.intake.extend();
-			Robot.elevator.retract();
-			Robot.dropper.raise();
-			Robot.intake.setSpeedManual(1.0, 1.0);
-			waitTimer.start();
-			state++;
-			break;
-		case 2:
-			if(waitTimer.get() > 5.0)
-				waitTimer.reset();
-				state++;
-			break;
-		case 3:
-			Robot.intake.retract();
-			Robot.elevator.goToPreset(1);
-			driverY.setTarget(-2.5);
-			driverX.setTarget(-2.25);
-			driverSpin.setTarget(0.0);
-			waitTimer.start();
-			state++;
-			break;
-		case 4:
-			if(atTarget(false))
-				state++;
-			break;
-		case 5:
-			driverY.setTarget(-6.5);
-			driverX.setTarget(0);
-			driverSpin.setTarget(0);
-			state++;
-			break;
-		case 6:
-			driverX.setDisabled(true);
-			driverY.setDisabled(true);
-			driverSpin.setTarget(-90.0);
-			state++;
-			break;
-		case 7:
-			if(atAngle())
-				Robot.elevator.goToPreset(0);
-				state++;
-			break;
-			case 8:
-			driverSpin.setTarget(90.0);
-			state++;
-			break;
-		case 9:
-			if(atAngle())
-				state++;
-			break;
-		case 10:
-			driverX.setDisabled(false);
-			driverY.setDisabled(false);
-			driverX.setTarget(0);
-			driverY.setTarget(9);
-			driverSpin.setTarget(0);
-		case 11:
-			if(atTarget(false))
-				state++;
-			break;
-		case 12:
-			Robot.intake.extend();
-			Robot.intake.setSpeedManual(1.0, 1.0);
-			waitTimer.start();
-			state++;
-			break;
-		case 13:
-			if(waitTimer.get() > 5.0){
-				waitTimer.reset();
-				state++;}
-			break;
-		case 14:
-			Robot.intake.setSpeedManual(0.3, 0.3);
-			driverX.setTarget(0);
-			driverY.setTarget(-8.5);
-			driverSpin.setTarget(0);
-			state++;
-			break;
-		case 15:
-			if(atTarget(false))
-				Robot.intake.retract();
-			break;
-		case 0: default:
-			stop();
-		}
-	}
 	private void OneCan(){//intake is set up touching the can either straight on or at an angle
 		switch(state){
 		case 1:
@@ -650,7 +558,7 @@ public class AutonRunner {
 		case 1:
 			broken = true;
 			Robot.intake.extend();
-			Robot.elevator.retract();
+			Robot.elevator.retractTotePiston();
 			Robot.dropper.raise();
 			Robot.intake.setSpeedManual(1.0, 1.0);
 			waitTimer.start();

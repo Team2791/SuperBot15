@@ -10,7 +10,6 @@ public class Dashboard {
 	DigitalInput moreBoardTest;
 	public Dashboard(){
 		pref = Preferences.getInstance();
-		moreBoardTest = new DigitalInput(12);
 	}
 	
 	public void debug(){
@@ -21,8 +20,7 @@ public class Dashboard {
 		debugElevator();
 		debugDropper();
 		debugAuton();
-		
-		SmartDashboard.putBoolean("More Board Working", !moreBoardTest.get());
+		Robot.elevator.display();
 	}
 	
 	public void debugJoysticks(){
@@ -36,11 +34,6 @@ public class Dashboard {
 		
 		SmartDashboard.putNumber("X Distance", Robot.encoders.encoderX.getDistance());
 		SmartDashboard.putNumber("Y Distance", Robot.encoders.encoderY.getDistance());
-		
-//		SmartDashboard.putString("Front Left Encoder",String.format("Speed: %f Distance:%f\n", Robot.encoders.encoderFL.getRate(),  Robot.encoders.encoderFL.getDistance()));
-//		SmartDashboard.putString("Front Right Encoder.", String.format("Speed: %f Distance:%f\n", Robot.encoders.encoderFR.getRate(),  Robot.encoders.encoderFR.getDistance()));
-//		SmartDashboard.putString("Back Left Encoder.", String.format("Speed: %f Distance:%f\n", Robot.encoders.encoderBL.getRate(),  Robot.encoders.encoderBL.getDistance()));
-//		SmartDashboard.putString("Back Right Encoder.", String.format("Speed: %f Distance:%f\n", Robot.encoders.encoderBR.getRate(),  Robot.encoders.encoderBR.getDistance()));
 	}
 	
 	public void debugDrive(){
@@ -66,7 +59,6 @@ public class Dashboard {
 		SmartDashboard.putNumber("Elevator preset", Robot.elevator.getPresetIndex());
 		SmartDashboard.putNumber("Elevator setpoint", Robot.elevator.getPresetIndex());
 		
-		SmartDashboard.putString("Elevator control", Robot.elevator.getControlState());
 		SmartDashboard.putString("Elevator Piston", Robot.elevator.getPistonState());
 		SmartDashboard.putBoolean("Elevator at top", Robot.elevator.atTop());
 		SmartDashboard.putBoolean("Elevator at bottom", Robot.elevator.atBot());
