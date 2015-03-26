@@ -184,11 +184,11 @@ public class Elevator{
 				}
 				autoLift = false;
 				System.out.println("autolift set false");
-			} else if(!atTarget() && !atBot() && Math.abs(getOutput()) <= 0.07 && Constants.JOYSTICK_SCALE == 1.0){
+			} /*else if(!atTarget() && !atBot() && Math.abs(getOutput()) <= 0.07 && Constants.JOYSTICK_SCALE == 1.0){
 				// if something isn't right, go to the preset
 				// 0.07 is smaller than the lowest speed in the updateOutput() method, make sure to update if that speed is changed
 				goToPreset(botToteIndex);
-			}
+			}*/
 		}
 	}
 	
@@ -262,22 +262,8 @@ public class Elevator{
 		SmartDashboard.putNumber("dropingToteHeight", dropingToteHeight);
 		SmartDashboard.putBoolean("holdingTote", holdingTote);
 		
-		for(int c = 0; c < 6; c++){
-			elevatorPositionTrack[c] = false;
-		}
-		for(int c = 0; c < 5; c++){
-			if(c != 5){
-				if(getHeight() >= getPresetValue(c) && getHeight() < getPresetValue(c+1)){
-					elevatorPositionTrack[c] = true;
-					break;
-				}
-			}
-			else {
-				if(getHeight() >= getPresetValue(c)){
-					elevatorPositionTrack[c] = true;
-					break;
-				}
-			}
+		for(int c = 0; c < elevatorPositionTrack.length; c++){
+			elevatorPositionTrack[c] = (getHeight() >= getPresetValue(c));
 		}
 		
 		SmartDashboard.putString(".", "POSITION OF ELEVATOR:");

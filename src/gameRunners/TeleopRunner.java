@@ -95,15 +95,13 @@ public class TeleopRunner {
 			
 			elevator.setTargetHeight(elevator.getHeight());
 			
-			for(int c = 0; c < 5; c++){
-				if(c != 5){
-					if(elevator.getHeight() >= elevator.getPresetValue(c) && elevator.getHeight() < elevator.getPresetValue(c+1)){
-						elevator.currentPresetIndex = c;
-						break;
-					}
+			for(int c = 0; c < Constants.ELEVATOR_PRESETS.length; c++){
+				if(elevator.getPresetValue(c) > elevator.getHeight()){
+					elevator.currentPresetIndex = c-1;
+					break;
 				}
-				else if(!elevator.atBot())
-					elevator.currentPresetIndex = 5;
+				else if(c == Constants.ELEVATOR_PRESETS.length-1)
+					elevator.currentPresetIndex = c;
 			}
 			
 			triggeredSwapToPreset = false;
