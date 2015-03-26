@@ -78,6 +78,12 @@ public class Elevator{
 			stackHeight = h;
 	}
 	
+	public void setNextPreset(int index){
+		if(index < 6 && index > 0){
+			botToteIndex = index;
+		}
+	}
+	
 	// increase and decrease preset if it's valid to do so
 	public void increasePreset() {
 		if(currentPresetIndex < Constants.ELEVATOR_PRESETS.length - 1)
@@ -154,10 +160,9 @@ public class Elevator{
 			if(getToteReadyToPickup() && atBot()) {
 				// chose the preset to send it to and record it
 				// if there are no totes on the elevator
-				if(botToteIndex == -1) {
-					int target = stackHeight;
-					goToPreset(target);
-					botToteIndex = target;
+				if(botToteIndex == -1){
+					goToPreset(stackHeight);
+					botToteIndex = stackHeight;
 				} else {
 					// decrememnt botToteIndex then tell goToPreset to go there
 					goToPreset(--botToteIndex);
@@ -179,6 +184,10 @@ public class Elevator{
 				}
 				autoLift = false;
 				System.out.println("autolift set false");
+			} else if(!atTarget() && !atBot() && Math.abs(getOutput()) <= 0.07 && Constants.JOYSTICK_SCALE == 1.0){
+				// if something isn't right, go to the preset
+				// 0.07 is smaller than the lowest speed in the updateOutput() method, make sure to update if that speed is changed
+				goToPreset(botToteIndex);
 			}
 		}
 	}
@@ -293,9 +302,9 @@ public class Elevator{
 		SmartDashboard.putNumber("liftAtTargetTimer", liftAtTargetTimer.get());
 		
 		if(botToteIndex == -1)
-			SmartDashboard.putString("autoLift hook", "GOING TO HOOK 5");
+			SmartDashboard.putString("autoLift hook", "GOING TO TOTE.POS 5");
 		else
-			SmartDashboard.putString("autoLift hook", "GOING TO HOOK "+(botToteIndex-1));
+			SmartDashboard.putString("autoLift hook", "GOING TO TOTE.POS "+(botToteIndex));
 		
 		if(isManual())
 			SmartDashboard.putString("Elevator Control", "Manual");
@@ -329,6 +338,7 @@ public class Elevator{
 	
 	public void autoLiftReset() {
 		botToteIndex = -1;
+		goToPreset(0);
 	}
 	
 	/**
@@ -344,7 +354,7 @@ public class Elevator{
 		autoLift = false;
 		toteReadyToPickup = false;
 		botToteIndex = -1;
-		stackHeight = 3;
+		stackHeight = Constants.ELEVATOR_STACK_HEIGHT;
 	}
 	
 	public void resetEncoder()  { encoder.reset(); }

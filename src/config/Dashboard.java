@@ -23,6 +23,33 @@ public class Dashboard {
 		Robot.elevator.display();
 	}
 	
+	public void gameDisplay(){
+		// drive system
+		double[] wheelSpeeds = Robot.mDrive.getWheelSpeeds();
+		SmartDashboard.putString("Wheel Speeeds", String.format("FL: %f, FR %f, BL: %f, BR: %f",
+			wheelSpeeds[0], wheelSpeeds[1], wheelSpeeds[2], wheelSpeeds[3]));
+		
+		SmartDashboard.putNumber("Gyro Target",  Robot.mDrive.getTargetAngle());
+		SmartDashboard.putNumber("Gyro Error Deg", Robot.mDrive.gyro.getAngle() - Robot.mDrive.getTargetAngle());
+		SmartDashboard.putBoolean("Gyro Calibrating", Robot.mDrive.gyro.currentlyCalibrating());
+		SmartDashboard.putNumber("Gyro Angle", Robot.mDrive.gyro.getAngle());
+		
+		// elevator
+		SmartDashboard.putNumber("Elevator Height", Robot.elevator.getHeight());
+		SmartDashboard.putNumber("Elevator preset", Robot.elevator.getPresetIndex());
+		SmartDashboard.putNumber("Elevator setpoint", Robot.elevator.getPresetIndex());
+		
+		SmartDashboard.putString("Elevator Piston", Robot.elevator.getPistonState());
+		SmartDashboard.putBoolean("Elevator at top", Robot.elevator.atTop());
+		SmartDashboard.putBoolean("Elevator at bottom", Robot.elevator.atBot());
+		SmartDashboard.putBoolean("Elevator encoder calibrated", Robot.elevator.getEncoderCalibrated());
+		
+		Robot.elevator.display();
+		
+		// dropper
+		SmartDashboard.putString("Drop state", Robot.dropper.getState());
+	}
+	
 	public void debugJoysticks(){
 		SmartDashboard.putNumber("Driver X", Robot.driver.getx());
 		SmartDashboard.putNumber("Driver Y", Robot.driver.gety());

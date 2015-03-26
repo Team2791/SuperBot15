@@ -32,11 +32,13 @@ public class TeleopRunner {
 			triggeredInc = true;
 		}
 		if(triggeredInc && !Robot.operator.getRawButton(Constants.BUTTON_RB)){
+			// if we're in preset mode and op presses rb, go up 1 preset
 			if(elevator.isPresetMode())
 				elevator.increasePreset();
 			
+			// if we're in auto lift mode, set the next desired preset to be 1 preset higher
 			if(elevator.isAutoLift())
-				elevator.setStackHeight(elevator.getStackHeight()+1);
+				elevator.setNextPreset(elevator.botToteIndex + 1);
 			
 			//intake.retract();
 			triggeredInc = false;
@@ -51,7 +53,7 @@ public class TeleopRunner {
 				elevator.goToPreset(0);
 			
 			if(elevator.isAutoLift())
-				elevator.setStackHeight(elevator.getStackHeight()-1);
+				elevator.setNextPreset(elevator.botToteIndex - 1);
 			
 			triggeredDec = false;
 		}
@@ -91,18 +93,16 @@ public class TeleopRunner {
 			elevator.autoLiftMode = false;
 			elevator.presetMode = true;
 			
-			double tempHeight = elevator.getHeight();
-			
-			elevator.setTargetHeight(tempHeight);
+			elevator.setTargetHeight(elevator.getHeight());
 			
 			for(int c = 0; c < 5; c++){
 				if(c != 5){
-					if(tempHeight > elevator.getPresetValue(c) && tempHeight < elevator.getPresetValue(c+1)){
+					if(elevator.getHeight() >= elevator.getPresetValue(c) && elevator.getHeight() < elevator.getPresetValue(c+1)){
 						elevator.currentPresetIndex = c;
 						break;
 					}
 				}
-				else
+				else if(!elevator.atBot())
 					elevator.currentPresetIndex = 5;
 			}
 			
@@ -118,6 +118,10 @@ public class TeleopRunner {
 			System.out.println("button A pressed");
 			elevator.setToteReadyToPickup(true);
 			triggeredHaveTote = false;
+		}
+		
+		if(Robot.operator.getRawButton(Constants.BUTTON_RS)){
+			elevator.autoLiftReset();
 		}
 		
 		// carry out the instructions given
