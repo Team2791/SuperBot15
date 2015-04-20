@@ -12,13 +12,14 @@ public class TeleopRunner {
 	
 	// elevator control related variables
 	private boolean triggeredInc  = false;
-	private boolean triggeredDec  = false;
-	private boolean triggeredHaveTote  = false;
+	private boolean triggeredDec  = false, triggeredFall = false;
+	private boolean triggeredHaveTote  = false, triggeredCancel = false;
 	private boolean triggeredSwapToManual = false, triggeredSwapToPreset = false, triggeredSwapToAuto = false;
 	
 	public void run(){
 		Robot.mDrive.run();
-		Robot.dash.debug();
+		//Robot.dash.debug();
+		Robot.dash.gameDisplay();
 		Robot.intake.run();
 		elevatorTeleop();
 		
@@ -38,7 +39,7 @@ public class TeleopRunner {
 			
 			// if we're in auto lift mode, set the next desired preset to be 1 preset higher
 			if(elevator.isAutoLift())
-				elevator.setNextPreset(elevator.botToteIndex + 1);
+				elevator.setStackHeight(elevator.getStackHeight() + 1);
 			
 			//intake.retract();
 			triggeredInc = false;
@@ -53,10 +54,22 @@ public class TeleopRunner {
 				elevator.goToPreset(0);
 			
 			if(elevator.isAutoLift())
-				elevator.setNextPreset(elevator.botToteIndex - 1);
+				elevator.setStackHeight(elevator.getStackHeight() - 1);
 			
 			triggeredDec = false;
 		}
+		
+		
+		// tote fell off, increase bot tote index by 1 to account
+		if(Robot.operator.getRawButton(Constants.BUTTON_B))
+			triggeredFall = true;
+		if(triggeredFall && !Robot.operator.getRawButton(Constants.BUTTON_B)){
+			if(elevator.isAutoLift())
+				elevator.setNextPreset(elevator.botToteIndex + 1);
+			
+			triggeredFall = false;
+		}
+		
 		
 		// --------- manual swap modes --------- //
 		if(Robot.operator.getRawButton(Constants.BUTTON_LS)){
@@ -119,7 +132,15 @@ public class TeleopRunner {
 		}
 		
 		if(Robot.operator.getRawButton(Constants.BUTTON_RS)){
-			elevator.autoLiftReset();
+			elevator.autoLiftReset(-1);
+		}
+		
+		if(Robot.operator.getRawButton(Constants.BUTTON_X) && elevator.isAutoLift())
+			triggeredCancel = true;
+		
+		if(triggeredCancel && !Robot.operator.getRawButton(Constants.BUTTON_X)){
+			elevator.autoLiftReset(elevator.botToteIndex+1);
+			triggeredCancel = false;
 		}
 		
 		// carry out the instructions given

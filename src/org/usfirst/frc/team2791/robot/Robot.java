@@ -43,7 +43,7 @@ public class Robot extends IterativeRobot {
 		autonRunner.startAuton();
 	}
     public void autonomousPeriodic(){
-		dash.debug();
+		dash.gameDisplay();
     	autonRunner.runPeriodic();
     }
 
@@ -53,7 +53,7 @@ public class Robot extends IterativeRobot {
     
     public void testPeriodic(){
     	compressor.start();
-    	Robot.dash.debug();
+    	Robot.dash.gameDisplay();
     	Robot.intake.run();
     	Robot.teleopRunner.elevatorTeleop();
     	Robot.dropper.run();
@@ -67,12 +67,11 @@ public class Robot extends IterativeRobot {
     	mDrive.disable();
     	elevator.disable();
     	
-    	if(operator.getRawButton(Constants.BUTTON_SEL) || driver.getRawButton(Constants.BUTTON_SEL)){
+    	if(driver.getRawButton(Constants.BUTTON_SEL)){
     		mDrive.gyro.recalibrate();
-    		elevator.resetEncoder();
     		encoders.resetAll();
     	}
     	
-    	Robot.dash.debug();
+    	Robot.dash.gameDisplay();
     }
 }

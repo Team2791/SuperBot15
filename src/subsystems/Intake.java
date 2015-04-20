@@ -27,7 +27,6 @@ public class Intake {
 			this.retract();
 		if(Robot.driver.getRawButton(Constants.BUTTON_Y)){
 			this.extend();
-			Robot.dropper.raise();
 		}
 		
 		double inputRT = Robot.driver.getAxis(Constants.AXIS_RT);

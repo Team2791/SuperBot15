@@ -74,7 +74,7 @@ public class AutonRunner {
 	public void runPeriodic(){
 		// first do logic		
 		
-		Robot.dash.debug();
+		Robot.dash.gameDisplay();
 		/*switch(Robot.dash.getIntFix("Auton.Strat", 1)){
 		case 1:
 			driveDiamond();
@@ -88,9 +88,9 @@ public class AutonRunner {
 		}*/
 		
 		//OneTote();
-		slobPush();
+		//slobPush();
 		//destroyedAuto();
-		
+		//driveBackFiveFt();
 		
 		// make robot do what logic says
 		if(!broken) {
@@ -105,6 +105,23 @@ public class AutonRunner {
 	}
 	
 	// autonomous modes
+	
+	private void driveBackFiveFt(){
+		switch(state){
+		case 1:
+			driverSpin.setTarget(0.0);
+			driverY.setTarget(-5.0);
+			driverX.setTarget(0.0);
+			state++;
+			break;
+		case 2:
+			if(atTarget(false))
+				state++;
+			break;
+		case 0: default:
+		}
+		
+	}
 	
 	private void slobAuto(){
 		switch(state){
@@ -126,10 +143,10 @@ public class AutonRunner {
 	private void slobPush(){
 		switch(state){
 		case 1:
-			Robot.intake.extend();
+//			Robot.intake.extend();
 			driverSpin.setTarget(0.0);
-			driverY.setTarget(0);
-			driverX.setTarget(-15.3); // -15.3
+//			driverY.setTarget(0);
+			driverX.setTarget(-12); // -15.3
 			state++;
 			break;
 		case 2:

@@ -28,6 +28,7 @@ public class MecanumDrive {
 	
 	// stuff for using the PID in teleop
 	private double targetAngle = 0.0;
+	private boolean dampening = false;
 	
 	public MecanumDrive(){
 		frontLeft   = new Talon(Electronics.FRONT_LEFT_TALON);
@@ -107,12 +108,18 @@ public class MecanumDrive {
 				spin = driverInput;
 			}
 			
-			if(Robot.driver.getPOV(0)==Constants.POV_RIGHT)
-				wheelSpeeds = driveTrain.mecanumDrive_Cartesian_report(0.45, 0, spin, 0);
-			else if(Robot.driver.getPOV(0)==Constants.POV_LEFT)
-				wheelSpeeds = driveTrain.mecanumDrive_Cartesian_report(-0.45, 0, spin, 0);
-			else if(!fieldCentric)
-				wheelSpeeds = driveTrain.mecanumDrive_Cartesian_report(xSpeed, ySpeed, spin, 0);
+			if(checkPOV(spin, Constants.MANUAL_DPAD_SLOW)){} // scans for dpad input and does it in the method where it checks via switch statement.
+								// ^^ intentionally does nothing
+			else if(!fieldCentric){ // normal drive
+				if(dampening){
+					xSpeed *= Constants.DAMPENING_SLOW;
+					ySpeed *= Constants.DAMPENING_SLOW;
+					spin   *= Constants.DAMPENING_SLOW;
+					wheelSpeeds = driveTrain.mecanumDrive_Cartesian_report(xSpeed, ySpeed, spin, 0);
+				}
+				else
+					wheelSpeeds = driveTrain.mecanumDrive_Cartesian_report(xSpeed, ySpeed, spin, 0);
+			}
 			else
 				wheelSpeeds = driveTrain.mecanumDrive_Cartesian_report(xSpeed, ySpeed, spin, gyro.getAngle());
 			
@@ -123,6 +130,37 @@ public class MecanumDrive {
 		}
 		else
 			calibrateTalons();
+	}
+	
+	public boolean checkPOV(double spin, double speed){			
+		switch(Robot.driver.getPOV(0)){
+		case Constants.POV_TOP:
+			wheelSpeeds = driveTrain.mecanumDrive_Cartesian_report(0, -speed, spin, 0);
+			return true;
+		case Constants.POV_TOP_RIGHT:
+			wheelSpeeds = driveTrain.mecanumDrive_Cartesian_report(speed, -speed, spin, 0);
+			return true;
+		case Constants.POV_RIGHT:
+			wheelSpeeds = driveTrain.mecanumDrive_Cartesian_report(speed + Constants.MANUAL_SIDEWAYS_OFFSET, 0, spin, 0);
+			return true;
+		case Constants.POV_BOT_RIGHT:
+			wheelSpeeds = driveTrain.mecanumDrive_Cartesian_report(speed, speed, spin, 0);
+			return true;
+		case Constants.POV_BOT:
+			wheelSpeeds = driveTrain.mecanumDrive_Cartesian_report(0, speed, spin, 0);
+			return true;
+		case Constants.POV_BOT_LEFT:
+			wheelSpeeds = driveTrain.mecanumDrive_Cartesian_report(-speed, speed, spin, 0);
+			return true;
+		case Constants.POV_LEFT:
+			wheelSpeeds = driveTrain.mecanumDrive_Cartesian_report(-(speed+Constants.MANUAL_SIDEWAYS_OFFSET), 0, spin, 0);
+			return true;
+		case Constants.POV_TOP_LEFT:
+			wheelSpeeds = driveTrain.mecanumDrive_Cartesian_report(-speed, -speed, spin, 0);
+			return true;
+		}
+		
+		return false;
 	}
 	
 	public void disable() {
@@ -162,6 +200,10 @@ public class MecanumDrive {
     	rotationPID.reset();
     	rotationPID.setSetpoint(0.0);
     	
+    }
+    
+    public void setDampening(boolean state){
+    	dampening = state;
     }
     
     public String getDriveType(){

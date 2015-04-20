@@ -24,6 +24,9 @@ public class Constants {
 	public static final double  FOLLOWER_DISTANCE_PER_PULSE = (4 * Math.PI) / 128.0 / 12.0;
 	public static final boolean MEC_RIGHT_SIDE_REVERSED     = true;
 	public static final boolean CALIBRATION_MODE            = false;
+	public static final double  DAMPENING_SLOW              = 0.40;
+	public static final double  MANUAL_DPAD_SLOW            = 0.30;
+	public static final double  MANUAL_SIDEWAYS_OFFSET      = 0.05;
 	
 	// --------- joysticks --------- //
 	
@@ -82,7 +85,7 @@ public class Constants {
 	
 	// auto lift conatants
 	public static final double ELEVATOR_AT_TARGET_ERROR_THRESHOLD = 0.2;
-	public static final double ELEVATOR_AUTO_LIFT_SETTLE_TIME     = 0.5;
+	public static final double ELEVATOR_AUTO_LIFT_SETTLE_TIME     = 0.75;
 	public static final int ELEVATOR_STACK_HEIGHT                 = 5;
 	
 	// --------- intake --------- //
