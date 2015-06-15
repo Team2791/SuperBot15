@@ -68,7 +68,7 @@ public class Robot extends IterativeRobot {
     	elevator.disable();
     	
     	if(driver.getRawButton(Constants.BUTTON_SEL)){
-    		mDrive.gyro.recalibrate();
+    		// * mDrive.gyro.recalibrate();
     		encoders.resetAll();
     	}
     	

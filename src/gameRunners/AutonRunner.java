@@ -58,7 +58,7 @@ public class AutonRunner {
 	
 	public void runInit(){
 		broken= false;
-		Robot.mDrive.gyro.reset();
+		// * Robot.mDrive.gyro.reset();
 		driverSpin.setTarget(0.0); // 0 degrees is what we want to be angled at
 		driverX.setTarget(0.0);
 		driverY.setTarget(0.0);
@@ -97,7 +97,7 @@ public class AutonRunner {
 			Robot.mDrive.driveTrain.mecanumDrive_Cartesian(
 					-driverX.updateOutput(Robot.encoders.encoderX.getDistance()),
 					driverY.updateOutput(Robot.encoders.encoderY.getDistance()),
-					driverSpin.updateOutput(Robot.mDrive.gyro.getAngle()),
+					0, // * driverSpin.updateOutput(Robot.mDrive.gyro.getAngle()),
 					0.0 // maybe 0.0
 			);
 		}

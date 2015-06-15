@@ -11,7 +11,7 @@ public class MecanumDrive {
 	public Talon frontLeft, backLeft;
 	public Talon frontRight;
 	public Talon backRight;
-	public ShakerGyro gyro;
+	// * public ShakerGyro gyro;
 	public ShakerDrive driveTrain;
 	
 	public boolean fieldCentric = false;
@@ -36,12 +36,12 @@ public class MecanumDrive {
 		frontRight  = new Talon(Electronics.FRONT_RIGHT_TALON);
 		backRight   = new Talon(Electronics.BACK_RIGHT_TALON);
 		
-		try{
-			gyro = new ShakerGyro(SPI.Port.kOnboardCS1);
-			(new Thread(gyro)).start();
-		}catch (InterruptedException e){
-			e.printStackTrace();
-		}		
+		// * try{
+			// * 	gyro = new ShakerGyro(SPI.Port.kOnboardCS1);
+			// * 	(new Thread(gyro)).start();
+			// * }catch (InterruptedException e){
+			// * 	e.printStackTrace();
+			// * }		
 		
 		driveTrain  = new ShakerDrive(frontLeft, backLeft, frontRight, backRight);
 		driveTrain.setInvertedMotor(RobotDrive.MotorType.kFrontRight, true);
@@ -64,6 +64,7 @@ public class MecanumDrive {
 		driveTrain.mecanumDrive_Cartesian(Robot.driver.getx(), Robot.driver.gety(), Robot.driver.getAxis(Constants.AXIS_RS_X), 0);
 	}
 
+	@SuppressWarnings("unused")
 	public void run() {
 		double driverInput;
 		double xSpeed = Robot.driver.getx();
@@ -81,11 +82,11 @@ public class MecanumDrive {
 			else
 				driverInput = Robot.driver.getAxis(Constants.AXIS_RS_X);
 			
-			if(PID_IN_USE) {
+			if(false){// * if(PID_IN_USE) {
 				if(driverInput != 0)
 					driftingFromTurn = true;
-				if(driverInput != 0 || ((Math.abs(gyro.getRate()) > 15.0) && driftingFromTurn)) {
-					targetAngle = gyro.getAngle();
+				if(driverInput != 0){ // * || ((Math.abs(gyro.getRate()) > 15.0) && driftingFromTurn)) {
+					// * targetAngle = gyro.getAngle();
 					rotationPID.setSetpoint(targetAngle);
 					rotationPID.reset();
 					spin = driverInput;
@@ -95,7 +96,7 @@ public class MecanumDrive {
 					// add PID output and feed forward to the spin
 					rotationPID.setSetpoint(targetAngle);
 					
-					spin = rotationPID.updateOutput(gyro.getAngle());
+					// * spin = rotationPID.updateOutput(gyro.getAngle());
 					// if not strafing apply daedzone to it doesnt rorate in place
 					if((xSpeed ==0 && ySpeed ==0) && Math.abs(rotationPID.getError()) < 2 ) {
 						// clear the I buildup
@@ -108,8 +109,8 @@ public class MecanumDrive {
 				spin = driverInput;
 			}
 			
+			// vv intentionally does nothing
 			if(checkPOV(spin, Constants.MANUAL_DPAD_SLOW)){} // scans for dpad input and does it in the method where it checks via switch statement.
-								// ^^ intentionally does nothing
 			else if(!fieldCentric){ // normal drive
 				if(dampening){
 					xSpeed *= Constants.DAMPENING_SLOW;
@@ -120,17 +121,18 @@ public class MecanumDrive {
 				else
 					wheelSpeeds = driveTrain.mecanumDrive_Cartesian_report(xSpeed, ySpeed, spin, 0);
 			}
-			else
-				wheelSpeeds = driveTrain.mecanumDrive_Cartesian_report(xSpeed, ySpeed, spin, gyro.getAngle());
+			// * else
+				// * wheelSpeeds = driveTrain.mecanumDrive_Cartesian_report(xSpeed, ySpeed, spin, gyro.getAngle());
 			
 //			if(Robot.driver.getPOV(0) == Constants.POV_TOP)
 //				fieldCentric = false;
 //			if(Robot.driver.getPOV(0) == Constants.POV_BOT)
 //				fieldCentric = true;
 		}
-		else
-			calibrateTalons();
 	}
+	// * else
+	// * calibrateTalons();
+	// * }
 	
 	public boolean checkPOV(double spin, double speed){			
 		switch(Robot.driver.getPOV(0)){
@@ -164,7 +166,7 @@ public class MecanumDrive {
 	}
 	
 	public void disable() {
-    	targetAngle = gyro.getAngle();
+		// * targetAngle = gyro.getAngle();
     	
     	PID_P = Robot.dash.getDoubleFix("PID_P", 0.045);
 		PID_I = Robot.dash.getDoubleFix("PID_I", 0.1);
@@ -195,7 +197,7 @@ public class MecanumDrive {
     public boolean nearSetpointMoving(){ return (Math.abs(rotationPID.getError()) < Constants.DRIVE_PID_ERROR_THRESHOLD_MOVING); }
     
     public void reset() {
-    	gyro.reset();
+    	// * gyro.reset();
     	targetAngle = 0.0;
     	rotationPID.reset();
     	rotationPID.setSetpoint(0.0);

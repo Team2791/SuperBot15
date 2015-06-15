@@ -29,10 +29,10 @@ public class Dashboard {
 		SmartDashboard.putString("Wheel Speeeds", String.format("FL: %f, FR %f, BL: %f, BR: %f",
 			wheelSpeeds[0], wheelSpeeds[1], wheelSpeeds[2], wheelSpeeds[3]));
 		
-		SmartDashboard.putNumber("Gyro Target",  Robot.mDrive.getTargetAngle());
-		SmartDashboard.putNumber("Gyro Error Deg", Robot.mDrive.gyro.getAngle() - Robot.mDrive.getTargetAngle());
-		SmartDashboard.putBoolean("Gyro Calibrating", Robot.mDrive.gyro.currentlyCalibrating());
-		SmartDashboard.putNumber("Gyro Angle", Robot.mDrive.gyro.getAngle());
+		// * SmartDashboard.putNumber("Gyro Target",  Robot.mDrive.getTargetAngle());
+		// * SmartDashboard.putNumber("Gyro Error Deg", Robot.mDrive.gyro.getAngle() - Robot.mDrive.getTargetAngle());
+		// * SmartDashboard.putBoolean("Gyro Calibrating", Robot.mDrive.gyro.currentlyCalibrating());
+		// * SmartDashboard.putNumber("Gyro Angle", Robot.mDrive.gyro.getAngle());
 		
 		// elevator
 		SmartDashboard.putNumber("Elevator Height", Robot.elevator.getHeight());
@@ -72,13 +72,13 @@ public class Dashboard {
 	}
 	
 	public void debugDrivePID(){
-		SmartDashboard.putNumber("Gyro Angle", Robot.mDrive.gyro.getAngle());
-		SmartDashboard.putNumber("Gyro Rate", Robot.mDrive.gyro.getRate());
+		// * SmartDashboard.putNumber("Gyro Angle", Robot.mDrive.gyro.getAngle());
+		// * SmartDashboard.putNumber("Gyro Rate", Robot.mDrive.gyro.getRate());
 		
 		SmartDashboard.putNumber("Gyro PID output", Robot.mDrive.getPIDOutput());
 		SmartDashboard.putNumber("Gyro Target",  Robot.mDrive.getTargetAngle());
-		SmartDashboard.putNumber("Gyro Error Deg", Robot.mDrive.gyro.getAngle() - Robot.mDrive.getTargetAngle());
-		SmartDashboard.putBoolean("Gyro Calibrating", Robot.mDrive.gyro.currentlyCalibrating());
+		// * SmartDashboard.putNumber("Gyro Error Deg", Robot.mDrive.gyro.getAngle() - Robot.mDrive.getTargetAngle());
+		// * SmartDashboard.putBoolean("Gyro Calibrating", Robot.mDrive.gyro.currentlyCalibrating());
 	}
 	
 	public void debugElevator(){
